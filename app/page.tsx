@@ -19,7 +19,7 @@ export default function Home() {
         <div className="wrap" style={{ position: 'relative', zIndex: 2, paddingTop: '40px' }}>
           <R>
             <p className="label" style={{ marginBottom: '20px' }}>
-              Waterford, Ireland &nbsp;·&nbsp; Budapest, 2025
+              Waterford, Ireland &nbsp;·&nbsp; Budapest, 2026
             </p>
           </R>
           <R delay={80}>
