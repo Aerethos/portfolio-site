@@ -6,7 +6,6 @@ export default function Home() {
       {/* ── HERO ── */}
       <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', position: 'relative', borderBottom: '1px solid var(--faint)', overflow: 'hidden' }}>
 
-        {/* Decorative large letterform */}
         <div aria-hidden style={{
           position: 'absolute', right: '-60px', top: '50%', transform: 'translateY(-50%)',
           fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 900,
@@ -15,10 +14,9 @@ export default function Home() {
           userSelect: 'none', pointerEvents: 'none', letterSpacing: '-0.05em'
         }}>N</div>
 
-        {/* Thin vertical accent line */}
         <div style={{ position: 'absolute', top: 0, left: '48px', width: '1px', height: '100%', background: 'linear-gradient(to bottom, transparent 0%, var(--faint) 30%, var(--faint) 70%, transparent 100%)' }} />
 
-        <div className="wrap" style={{ position: 'relative', zIndex: 2, paddingTop: '80px' }}>
+        <div className="wrap" style={{ position: 'relative', zIndex: 2, paddingTop: '40px' }}>
           <R>
             <p className="label" style={{ marginBottom: '20px' }}>
               Waterford, Ireland &nbsp;·&nbsp; Budapest, 2025
@@ -46,19 +44,12 @@ export default function Home() {
             </h1>
           </R>
           <R delay={200}>
-            <p style={{ fontSize: '1.1rem', color: 'var(--mid)', maxWidth: '480px', lineHeight: 1.85, marginBottom: '44px' }}>
+            <p style={{ fontSize: '1.1rem', color: 'var(--mid)', maxWidth: '480px', lineHeight: 1.85 }}>
               Founder of <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>AerEthos</strong>, second-year International Business student at SETU Waterford, and currently in Budapest for an Erasmus study week. This site is part of a Graphic Design &amp; Web module — but I figured if we&apos;re making a site, we might as well make a proper one.
             </p>
           </R>
-          <R delay={260}>
-            <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <span className="btn" style={{ cursor: 'default', opacity: 0.5 }}>About me</span>
-              <span className="btn btn-outline" style={{ cursor: 'default', opacity: 0.5 }}>Final Project</span>
-            </div>
-          </R>
         </div>
 
-        {/* Scroll nudge */}
         <div style={{ position: 'absolute', bottom: '36px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
           <style>{`@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}`}</style>
           <p className="label" style={{ fontSize: '0.55rem' }}>Scroll</p>
