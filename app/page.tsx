@@ -54,8 +54,8 @@ export default function Home() {
           </R>
           <R delay={260}>
             <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <Link href="/about" className="btn">About me</Link>
-              <Link href="/project" className="btn btn-outline">Final Project</Link>
+              <Link href="/" className="btn">About me</Link>
+              <Link href="/" className="btn btn-outline">Final Project</Link>
             </div>
           </R>
         </div>
