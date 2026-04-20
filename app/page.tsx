@@ -1,6 +1,4 @@
-import Link from 'next/link'
 import R from '@/components/R'
-// cards are non-linked for now — content pages unlocked per class
 
 export default function Home() {
   return (
@@ -23,7 +21,7 @@ export default function Home() {
         <div className="wrap" style={{ position: 'relative', zIndex: 2, paddingTop: '80px' }}>
           <R>
             <p className="label" style={{ marginBottom: '20px' }}>
-              Waterford, Ireland &nbsp;·&nbsp; Budapest, 2026
+              Waterford, Ireland &nbsp;·&nbsp; Budapest, 2025
             </p>
           </R>
           <R delay={80}>
@@ -54,8 +52,8 @@ export default function Home() {
           </R>
           <R delay={260}>
             <div style={{ display: 'flex', gap: '14px', flexWrap: 'wrap' }}>
-              <Link href="/" className="btn">About me</Link>
-              <Link href="/" className="btn btn-outline">Final Project</Link>
+              <span className="btn" style={{ cursor: 'default', opacity: 0.5 }}>About me</span>
+              <span className="btn btn-outline" style={{ cursor: 'default', opacity: 0.5 }}>Final Project</span>
             </div>
           </R>
         </div>
