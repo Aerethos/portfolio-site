@@ -39,11 +39,11 @@ export default function About() {
                 <div className="rule" />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
                   {[
-                    { icon: '📍', text: 'Budapest, Hungary — Erasmus BIP study week' },
-                    { icon: '🏫', text: 'SETU Waterford, International Business Year 2' },
-                    { icon: '🚀', text: 'Running AerEthos — Irish school yearbooks' },
-                    { icon: '🇺🇸', text: 'J-1 placement at Lawrence Beach Club, NY this summer' },
-                    { icon: '🇯🇵', text: 'Kanagawa University exchange, Yokohama — Sept 2026' },
+                    { icon: '', text: 'Budapest, Hungary — Erasmus BIP study week' },
+                    { icon: '', text: 'SETU Waterford, International Business Year 2' },
+                    { icon: '', text: 'Running AerEthos — Irish school yearbooks' },
+                    { icon: '', text: 'J-1 placement in New York this summer' },
+                    { icon: '', text: 'Kanagawa University exchange, Japan - Sept 2026' },
                   ].map((item, i) => (
                     <div key={i} style={{ display: 'flex', gap: '14px', padding: '14px 0', borderBottom: '1px solid var(--faint)', alignItems: 'flex-start' }}>
                       <span style={{ fontSize: '1rem', flexShrink: 0, marginTop: '1px' }}>{item.icon}</span>
