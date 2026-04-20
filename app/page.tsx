@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import R from '@/components/R'
+// cards are non-linked for now — content pages unlocked per class
 
 export default function Home() {
   return (
@@ -22,7 +23,7 @@ export default function Home() {
         <div className="wrap" style={{ position: 'relative', zIndex: 2, paddingTop: '80px' }}>
           <R>
             <p className="label" style={{ marginBottom: '20px' }}>
-              Waterford, Ireland &nbsp;·&nbsp; Budapest, 2025
+              Waterford, Ireland &nbsp;·&nbsp; Budapest, 2026
             </p>
           </R>
           <R delay={80}>
@@ -105,28 +106,24 @@ export default function Home() {
           <div className="g2">
             {[
               {
-                href: '/tasks',
                 num: '01',
                 title: 'Weekly Tasks',
                 sub: '50% of module',
                 desc: 'Domain pricing across six EU country codes, web hosting comparisons, the Edutus University logo rebuilt as an SVG vector, and a faculty banner created and modified in GIMP.',
               },
               {
-                href: '/project',
                 num: '02',
                 title: 'Final Project',
                 sub: '20% of module',
                 desc: 'A complete business graphics system — business cards, brochure, advertisement, menu, and opening hours — unified under a single brand identity.',
               },
               {
-                href: '/review',
                 num: '03',
                 title: 'Graphic Review',
                 sub: 'Part of weekly tasks',
                 desc: 'Real-world design pieces analysed — poster, advertisement, website, brochure. Problems identified, strong points noted, improvements proposed.',
               },
               {
-                href: '/about',
                 num: '04',
                 title: 'About',
                 sub: 'Who made this',
@@ -134,17 +131,14 @@ export default function Home() {
               },
             ].map((s, i) => (
               <R key={i} delay={i * 80}>
-                <Link href={s.href} style={{ display: 'block', textDecoration: 'none', color: 'inherit' }}>
-                  <div className="card" style={{ height: '100%' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
-                      <p className="label" style={{ color: 'var(--mid)' }}>{s.sub}</p>
-                      <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '2.5rem', color: 'var(--faint)', lineHeight: 1 }}>{s.num}</span>
-                    </div>
-                    <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.55rem', marginBottom: '10px' }}>{s.title}</h3>
-                    <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '20px' }}>{s.desc}</p>
-                    <p style={{ fontFamily: 'var(--mono)', fontSize: '0.62rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--accent)' }}>View →</p>
+                <div className="card" style={{ height: '100%' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+                    <p className="label" style={{ color: 'var(--mid)' }}>{s.sub}</p>
+                    <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '2.5rem', color: 'var(--faint)', lineHeight: 1 }}>{s.num}</span>
                   </div>
-                </Link>
+                  <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.55rem', marginBottom: '10px' }}>{s.title}</h3>
+                  <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8 }}>{s.desc}</p>
+                </div>
               </R>
             ))}
           </div>
