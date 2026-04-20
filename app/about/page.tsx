@@ -51,25 +51,6 @@ export default function About() {
                     </div>
                   ))}
                 </div>
-
-                <div style={{ marginTop: '40px' }}>
-                  <p className="label" style={{ marginBottom: '12px' }}>This site</p>
-                  <div className="rule" />
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                    {[
-                      ['Framework', 'Next.js 15 (App Router)'],
-                      ['Language', 'TypeScript'],
-                      ['Deployment', 'Vercel (free tier)'],
-                      ['Fonts', 'Playfair Display + Instrument Sans + Fira Code'],
-                      ['Everyone else', 'Google Sites 😬'],
-                    ].map(([k, v]) => (
-                      <div key={k} style={{ display: 'flex', gap: '16px', fontSize: '0.84rem' }}>
-                        <span style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--faint)', textTransform: 'uppercase', letterSpacing: '0.08em', width: '100px', flexShrink: 0, paddingTop: '2px' }}>{k}</span>
-                        <span style={{ color: 'var(--mid)' }}>{v}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
               </div>
             </R>
           </div>
