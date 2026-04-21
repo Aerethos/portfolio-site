@@ -5,19 +5,220 @@ import { useEffect, useRef } from 'react'
 
 export default function Home() {
   const marqueeRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     const el = marqueeRef.current
     if (!el) return
     let x = 0
-    const speed = 0.4
     const frame = () => {
-      x -= speed
+      x -= 0.4
       if (x < -el.scrollWidth / 2) x = 0
       el.style.transform = `translateX(${x}px)`
       requestAnimationFrame(frame)
     }
     requestAnimationFrame(frame)
+  }, [])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    const resize = () => {
+      canvas.width = canvas.offsetWidth * window.devicePixelRatio
+      canvas.height = canvas.offsetHeight * window.devicePixelRatio
+      ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const W = () => canvas.offsetWidth
+    const H = () => canvas.offsetHeight
+
+    // Globe rotation
+    let rotation = 0
+    // Plane progress along arc
+    let planeT = 0
+    let trailPoints: { x: number; y: number; a: number }[] = []
+
+    // Convert lat/lng to canvas x/y for a simple orthographic projection
+    const project = (lat: number, lng: number, rot: number) => {
+      const latR = (lat * Math.PI) / 180
+      const lngR = ((lng + rot) * Math.PI) / 180
+      const cx = W() * 0.62
+      const cy = H() * 0.5
+      const r = Math.min(W(), H()) * 0.34
+
+      const x2 = Math.cos(latR) * Math.sin(lngR)
+      const y2 = -Math.sin(latR)
+      const z2 = Math.cos(latR) * Math.cos(lngR)
+
+      return { x: cx + r * x2, y: cy + r * y2, visible: z2 > 0 }
+    }
+
+    // Dublin: 53.3°N, 6.3°W  Budapest: 47.5°N, 19.1°E
+    const dublinLat = 53.3, dublinLng = -6.3
+    const budLat = 47.5, budLng = 19.1
+
+    // Interpolate lat/lng along great circle (simple lerp good enough here)
+    const interpolate = (t: number) => {
+      const lat = dublinLat + (budLat - dublinLat) * t
+      const lng = dublinLng + (budLng - dublinLng) * t
+      // Arc height — push up slightly for great-circle feel
+      const arc = Math.sin(t * Math.PI) * 6
+      return { lat: lat + arc, lng }
+    }
+
+    // Draw a faint grid of lat/lng lines
+    const drawGlobe = (rot: number) => {
+      const cx = W() * 0.62
+      const cy = H() * 0.5
+      const r = Math.min(W(), H()) * 0.34
+
+      // Outer circle
+      ctx.beginPath()
+      ctx.arc(cx, cy, r, 0, Math.PI * 2)
+      ctx.strokeStyle = 'rgba(212,69,12,0.08)'
+      ctx.lineWidth = 1
+      ctx.stroke()
+
+      // Fill
+      ctx.beginPath()
+      ctx.arc(cx, cy, r, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(212,69,12,0.018)'
+      ctx.fill()
+
+      // Longitude lines
+      for (let lng = -180; lng < 180; lng += 20) {
+        ctx.beginPath()
+        let first = true
+        for (let lat = -90; lat <= 90; lat += 3) {
+          const p = project(lat, lng, rot)
+          if (!p.visible) { first = true; continue }
+          if (first) { ctx.moveTo(p.x, p.y); first = false }
+          else ctx.lineTo(p.x, p.y)
+        }
+        ctx.strokeStyle = 'rgba(212,69,12,0.07)'
+        ctx.lineWidth = 0.5
+        ctx.stroke()
+      }
+
+      // Latitude lines
+      for (let lat = -60; lat <= 60; lat += 20) {
+        ctx.beginPath()
+        let first = true
+        for (let lng2 = -180; lng2 <= 180; lng2 += 3) {
+          const p = project(lat, lng2, rot)
+          if (!p.visible) { first = true; continue }
+          if (first) { ctx.moveTo(p.x, p.y); first = false }
+          else ctx.lineTo(p.x, p.y)
+        }
+        ctx.strokeStyle = 'rgba(212,69,12,0.06)'
+        ctx.lineWidth = 0.5
+        ctx.stroke()
+      }
+    }
+
+    const drawRoute = (rot: number, t: number) => {
+      // Draw dashed great-circle path
+      ctx.beginPath()
+      let first = true
+      for (let i = 0; i <= 100; i++) {
+        const pos = interpolate(i / 100)
+        const p = project(pos.lat, pos.lng, rot)
+        if (!p.visible) { first = true; continue }
+        if (first) { ctx.moveTo(p.x, p.y); first = false }
+        else ctx.lineTo(p.x, p.y)
+      }
+      ctx.setLineDash([3, 5])
+      ctx.strokeStyle = 'rgba(212,69,12,0.25)'
+      ctx.lineWidth = 1
+      ctx.stroke()
+      ctx.setLineDash([])
+
+      // Dublin dot
+      const dublin = project(dublinLat, dublinLng, rot)
+      if (dublin.visible) {
+        ctx.beginPath()
+        ctx.arc(dublin.x, dublin.y, 3, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(212,69,12,0.6)'
+        ctx.fill()
+        ctx.font = '500 9px var(--mono, monospace)'
+        ctx.fillStyle = 'rgba(212,69,12,0.55)'
+        ctx.fillText('Dublin', dublin.x + 6, dublin.y - 4)
+      }
+
+      // Budapest dot
+      const bud = project(budLat, budLng, rot)
+      if (bud.visible) {
+        ctx.beginPath()
+        ctx.arc(bud.x, bud.y, 3, 0, Math.PI * 2)
+        ctx.fillStyle = 'rgba(212,69,12,0.9)'
+        ctx.fill()
+        // Pulse ring
+        ctx.beginPath()
+        ctx.arc(bud.x, bud.y, 6 + Math.sin(Date.now() / 400) * 2, 0, Math.PI * 2)
+        ctx.strokeStyle = 'rgba(212,69,12,0.35)'
+        ctx.lineWidth = 1
+        ctx.stroke()
+        ctx.font = '500 9px var(--mono, monospace)'
+        ctx.fillStyle = 'rgba(212,69,12,0.8)'
+        ctx.fillText('Budapest ✦', bud.x + 6, bud.y - 4)
+      }
+
+      // Plane
+      const planePos = interpolate(t)
+      const plane = project(planePos.lat, planePos.lng, rot)
+      const nextPos = interpolate(Math.min(t + 0.01, 1))
+      const planeNext = project(nextPos.lat, nextPos.lng, rot)
+
+      if (plane.visible) {
+        // Trail
+        trailPoints.push({ x: plane.x, y: plane.y, a: 1 })
+        if (trailPoints.length > 40) trailPoints.shift()
+        trailPoints.forEach((pt, idx) => {
+          ctx.beginPath()
+          ctx.arc(pt.x, pt.y, 1, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(212,69,12,${(idx / trailPoints.length) * 0.3})`
+          ctx.fill()
+        })
+
+        // Plane icon (triangle rotated toward direction of travel)
+        const angle = Math.atan2(planeNext.y - plane.y, planeNext.x - plane.x)
+        ctx.save()
+        ctx.translate(plane.x, plane.y)
+        ctx.rotate(angle)
+        ctx.beginPath()
+        ctx.moveTo(8, 0)
+        ctx.lineTo(-5, 4)
+        ctx.lineTo(-3, 0)
+        ctx.lineTo(-5, -4)
+        ctx.closePath()
+        ctx.fillStyle = 'rgba(212,69,12,0.85)'
+        ctx.fill()
+        ctx.restore()
+      }
+    }
+
+    let animId: number
+    const draw = () => {
+      ctx.clearRect(0, 0, W(), H())
+      rotation += 0.04
+      planeT += 0.0018
+      if (planeT > 1) { planeT = 0; trailPoints = [] }
+
+      drawGlobe(rotation)
+      drawRoute(rotation, planeT)
+      animId = requestAnimationFrame(draw)
+    }
+    draw()
+
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', resize)
+    }
   }, [])
 
   return (
@@ -36,6 +237,14 @@ export default function Home() {
         background: 'var(--bg)'
       }}>
 
+        {/* Globe canvas — full hero background */}
+        <canvas ref={canvasRef} style={{
+          position: 'absolute', inset: 0,
+          width: '100%', height: '100%',
+          pointerEvents: 'none', zIndex: 1
+        }} />
+
+        {/* Top-right tag */}
         <div style={{
           position: 'absolute', top: '32px', right: '48px',
           fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.14em',
@@ -47,28 +256,23 @@ export default function Home() {
           <span style={{ color: 'var(--accent)' }}>Erasmus BIP · Budapest 2026</span>
         </div>
 
-        <div style={{ position: 'absolute', top: 0, left: '48px', width: '1px', height: '100%', background: 'linear-gradient(to bottom, transparent 0%, var(--faint) 25%, var(--faint) 75%, transparent 100%)' }} />
+        {/* Left vertical rule */}
+        <div style={{ position: 'absolute', top: 0, left: '48px', width: '1px', height: '100%', background: 'linear-gradient(to bottom, transparent 0%, var(--faint) 25%, var(--faint) 75%, transparent 100%)', zIndex: 2 }} />
         <div style={{
           position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)',
           fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.18em',
-          textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap'
+          textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap', zIndex: 2
         }}>Waterford · Ireland</div>
 
-        <div aria-hidden style={{
-          position: 'absolute', right: '-80px', bottom: '-60px',
-          fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 900,
-          fontSize: 'clamp(320px, 42vw, 580px)',
-          color: 'rgba(212,69,12,0.04)', lineHeight: 1,
-          userSelect: 'none', pointerEvents: 'none', letterSpacing: '-0.05em'
-        }}>N</div>
-
+        {/* Horizontal mid rule */}
         <div style={{
           position: 'absolute', top: '50%', left: 0, right: 0,
-          height: '1px', background: 'var(--faint)', opacity: 0.4,
-          pointerEvents: 'none'
+          height: '1px', background: 'var(--faint)', opacity: 0.3,
+          pointerEvents: 'none', zIndex: 2
         }} />
 
-        <div className="wrap" style={{ position: 'relative', zIndex: 2, paddingTop: '0' }}>
+        {/* Main content */}
+        <div className="wrap" style={{ position: 'relative', zIndex: 3, paddingTop: '0' }}>
           <div style={{ marginBottom: '40px' }}>
             <h1 className="hero-word" style={{
               fontFamily: 'var(--serif)', fontWeight: 900,
@@ -108,7 +312,8 @@ export default function Home() {
           </div>
         </div>
 
-        <div style={{ position: 'absolute', bottom: '36px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+        {/* Scroll indicator */}
+        <div style={{ position: 'absolute', bottom: '36px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', zIndex: 3 }}>
           <p className="label" style={{ fontSize: '0.55rem' }}>Scroll</p>
           <div style={{ width: '1px', height: '36px', background: 'linear-gradient(to bottom, var(--accent), transparent)', animation: 'nudge 2s ease-in-out infinite' }} />
         </div>
@@ -161,13 +366,12 @@ export default function Home() {
               Four sections covering everything required for the Graphic Design &amp; Web module.
             </p>
           </R>
-
           <div className="g2">
             {[
-              { href: '/tasks',   num: '01', title: 'Weekly Tasks',  sub: '50% of module',       desc: 'Domain pricing across six EU country codes, web hosting comparisons, the Edutus University logo rebuilt as an SVG vector, and a faculty banner created and modified in GIMP.' },
-              { href: '/project', num: '02', title: 'Final Project',  sub: '20% of module',       desc: 'A complete business graphics system — business cards, brochure, advertisement, menu, and opening hours — unified under the AerEthos brand identity.' },
+              { href: '/tasks',   num: '01', title: 'Weekly Tasks',  sub: '50% of module',        desc: 'Domain pricing across six EU country codes, web hosting comparisons, the Edutus University logo rebuilt as an SVG vector, and a faculty banner created and modified in GIMP.' },
+              { href: '/project', num: '02', title: 'Final Project',  sub: '20% of module',        desc: 'A complete business graphics system — business cards, brochure, advertisement, menu, and opening hours — unified under the AerEthos brand identity.' },
               { href: '/review',  num: '03', title: 'Graphic Review', sub: 'Part of weekly tasks', desc: 'Real-world design pieces analysed — poster, advertisement, website, brochure. Problems identified, positives noted, improvements proposed.' },
-              { href: '/about',   num: '04', title: 'About',          sub: 'Who made this',        desc: 'A short introduction to me — Nathan Sfendji — and what I\'m up to right now.' },
+              { href: '/about',   num: '04', title: 'About',          sub: 'Who made this',         desc: 'A short introduction to me — Nathan Sfendji — and what I\'m up to right now.' },
             ].map((s, i) => (
               <R key={i} delay={i * 80}>
                 <Link href={s.href} style={{ display: 'block', textDecoration: 'none', color: 'inherit', height: '100%' }}>
@@ -196,14 +400,12 @@ export default function Home() {
                 I run <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>AerEthos</em> —<br />
                 yearbooks for Irish schools.
               </h2>
-              <a href="https://aerethos.com" target="_blank" rel="noreferrer" className="btn">
-                aerethos.com →
-              </a>
+              <a href="https://aerethos.com" target="_blank" rel="noreferrer" className="btn">aerethos.com →</a>
             </div>
             <div style={{ padding: '64px 0 64px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               {[
-                { stat: '6+', detail: 'Schools served' },
-                { stat: 'EI', detail: 'Enterprise Ireland — New Frontiers' },
+                { stat: '6+',  detail: 'Schools served' },
+                { stat: 'EI',  detail: 'Enterprise Ireland — New Frontiers' },
                 { stat: '\'23', detail: 'Founded in sixth year' },
                 { stat: '.com', detail: 'aerethos.com — built from scratch' },
               ].map((item, i) => (
