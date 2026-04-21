@@ -20,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main>{children}</main>
         <footer>
           <span>Nathan Sfendji</span>
-          <p>Built with Next.js · Deployed on Vercel · <span>Erasmus BIP Budapest 2025</span></p>
+          <p>Deployed on Vercel using custom code by Nathan Sfendji · <span>Erasmus BIP Budapest 2026</span></p>
         </footer>
       </body>
     </html>
