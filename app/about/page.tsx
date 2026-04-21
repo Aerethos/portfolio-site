@@ -8,18 +8,40 @@ export default function About() {
       <div className="ptop">
         <div className="wrap">
           <R>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '48px', flexWrap: 'wrap' }}>
-              <div>
-                <p className="label" style={{ marginBottom: '12px' }}>About</p>
-                <h1>Nathan<br /><em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Sfendji</em></h1>
+            <div style={{ display: 'flex', alignItems: 'stretch', gap: '0', minHeight: '380px', flexWrap: 'wrap' }}>
+
+              {/* Left — text */}
+              <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', justifyContent: 'flex-end', paddingRight: '64px', paddingBottom: '8px' }}>
+                <p className="label" style={{ marginBottom: '16px' }}>About</p>
+                <h1 style={{ fontSize: 'clamp(3.5rem, 7vw, 6.5rem)', lineHeight: 0.95, letterSpacing: '-0.03em' }}>
+                  Nathan<br />
+                  <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Sfendji</em>
+                </h1>
+                <div style={{ marginTop: '24px', width: '32px', height: '2px', background: 'var(--accent)' }} />
+                <p style={{ marginTop: '16px', fontFamily: 'var(--mono)', fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--mid)', lineHeight: 1.8 }}>
+                  Waterford, Ireland<br />
+                  Budapest · April 2025
+                </p>
               </div>
-              <Image
-                src="/nathanimage.png"
-                alt="Nathan Sfendji"
-                width={220}
-                height={260}
-                style={{ objectFit: 'cover', border: '1px solid var(--faint)', flexShrink: 0 }}
-              />
+
+              {/* Right — photo */}
+              <div style={{ position: 'relative', width: '360px', minHeight: '380px', flexShrink: 0 }}>
+                <div style={{
+                  position: 'absolute',
+                  top: '14px', right: '-14px',
+                  width: '100%', height: '100%',
+                  border: '1px solid var(--accent)',
+                  opacity: 0.25,
+                  zIndex: 0
+                }} />
+                <Image
+                  src="/nathanimage.png"
+                  alt="Nathan Sfendji in Budapest"
+                  fill
+                  style={{ objectFit: 'cover', objectPosition: 'center top', zIndex: 1 }}
+                />
+              </div>
+
             </div>
           </R>
         </div>
