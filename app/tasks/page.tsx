@@ -1,5 +1,6 @@
 import R from '@/components/R'
 import Link from 'next/link'
+import Image from 'next/image'
 
 const domains = [
   { tld: '.be', country: 'Belgium', r1: 'Namecheap', p1: '€9.98', r2: 'GoDaddy', p2: '€12.99' },
@@ -19,34 +20,6 @@ const hosting = [
   { name: 'GitHub Pages', type: 'Static only', free: 'Free', paid: '—', note: 'Only for static sites, no server-side. Great for portfolios.' },
 ]
 
-const EdutusLogo = ({ dark = false }: { dark?: boolean }) => (
-  <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '280px' }}>
-    {/* Green circle */}
-    <circle cx="56" cy="60" r="48" fill="#6abf1e" />
-    {/* Three white horizontal bars (the E mark) */}
-    <rect x="32" y="44" width="48" height="8" rx="4" fill="white" />
-    <rect x="32" y="56" width="48" height="8" rx="4" fill="white" />
-    <rect x="32" y="68" width="48" height="8" rx="4" fill="white" />
-    {/* Wordmark */}
-    <text
-      x="120" y="52"
-      fontFamily="Arial Black, Arial, sans-serif"
-      fontSize="28"
-      fontWeight="900"
-      fill={dark ? '#ffffff' : '#1a1a1a'}
-      letterSpacing="1"
-    >EDUTUS</text>
-    <text
-      x="120" y="82"
-      fontFamily="Arial Black, Arial, sans-serif"
-      fontSize="28"
-      fontWeight="900"
-      fill={dark ? '#ffffff' : '#1a1a1a'}
-      letterSpacing="1"
-    >EGYETEM</text>
-  </svg>
-)
-
 export default function Tasks() {
   return (
     <>
@@ -55,7 +28,7 @@ export default function Tasks() {
           <R>
             <p className="label" style={{ marginBottom: '12px' }}>Weekly Tasks — 50%</p>
             <h1>The work.</h1>
-            <p className="sub">Domain research, web hosting costs, a vector logo, and a bitmap edit.</p>
+            <p className="sub">Domain research, web hosting costs, a vector logo, and a bitmap edit. All documented here.</p>
           </R>
         </div>
       </div>
@@ -68,7 +41,7 @@ export default function Tasks() {
             <div className="rule" />
             <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Six European domain extensions</h2>
             <p style={{ color: 'var(--mid)', maxWidth: '560px', lineHeight: 1.85, marginBottom: '40px', fontSize: '0.92rem' }}>
-              Annual registration prices comparing a local/specialist registrar vs. a global one for each ccTLD.
+              Annual registration prices comparing a local/specialist registrar vs. a global one for each ccTLD. All prices include VAT where applicable.
             </p>
           </R>
           <R delay={80}>
@@ -134,69 +107,61 @@ export default function Tasks() {
         </div>
       </section>
 
-      {/* LOGO — SVG */}
+      {/* LOGO */}
       <section>
         <div className="wrap">
           <R>
             <p className="label">Task 2 — Vector Logo</p>
             <div className="rule" />
             <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Edutus Egyetem — SVG</h2>
-            <p style={{ color: 'var(--mid)', maxWidth: '560px', lineHeight: 1.85, marginBottom: '48px', fontSize: '0.92rem' }}>
-              Recreated in vector format using SVG — the same format used by professional design tools like Illustrator and Inkscape. A vector file scales to any size without ever losing quality, unlike a PNG or JPEG.
+            <p style={{ color: 'var(--mid)', maxWidth: '540px', lineHeight: 1.85, marginBottom: '48px', fontSize: '0.92rem' }}>
+              Recreated in vector format. A vector file scales to any size without ever losing quality — unlike a PNG or JPEG which blurs when enlarged.
             </p>
           </R>
 
-          <div className="g2" style={{ gap: '24px', marginBottom: '32px' }}>
-            {/* Light version */}
+          <div className="g2" style={{ gap: '24px', alignItems: 'stretch' }}>
             <R>
               <div>
-                <div style={{
-                  background: '#ffffff',
-                  border: '1px solid var(--faint)',
-                  padding: '52px 40px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                  <EdutusLogo dark={false} />
+                <div style={{ background: '#ffffff', border: '1px solid var(--faint)', padding: '52px 40px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+                  <Image
+                    src="/Slide1.png"
+                    alt="Edutus Egyetem logo on white"
+                    width={280}
+                    height={120}
+                    style={{ objectFit: 'contain', width: '100%', maxWidth: '280px', height: 'auto' }}
+                  />
                 </div>
-                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginTop: '10px', letterSpacing: '0.08em' }}>
-                  Primary — on white
-                </p>
+                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginTop: '10px', letterSpacing: '0.08em' }}>Primary — on white</p>
               </div>
             </R>
 
-            {/* Dark version */}
             <R delay={80}>
               <div>
-                <div style={{
-                  background: '#1a1a1a',
-                  padding: '52px 40px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
-                  <EdutusLogo dark={true} />
+                <div style={{ background: '#1a1a1a', padding: '52px 40px', display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '200px' }}>
+                  <Image
+                    src="/Slide2.png"
+                    alt="Edutus Egyetem logo on dark"
+                    width={280}
+                    height={120}
+                    style={{ objectFit: 'contain', width: '100%', maxWidth: '280px', height: 'auto' }}
+                  />
                 </div>
-                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginTop: '10px', letterSpacing: '0.08em' }}>
-                  Reversed — on dark
-                </p>
+                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginTop: '10px', letterSpacing: '0.08em' }}>Reversed — on dark</p>
               </div>
             </R>
           </div>
 
           {/* Brand identity breakdown */}
           <R delay={100}>
-            <div className="card" style={{ marginTop: '8px' }}>
+            <div className="card" style={{ marginTop: '24px' }}>
               <p className="label" style={{ marginBottom: '20px' }}>Brand identity — colour & type</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '32px' }}>
 
-                {/* Colours */}
                 <div>
                   <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Colour palette</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     {[
-                      { swatch: '#6abf1e', name: 'Edutus Green', hex: '#6ABF1E' },
+                      { swatch: '#76bc1a', name: 'Edutus Green', hex: '#76BC1A' },
                       { swatch: '#1a1a1a', name: 'Near Black', hex: '#1A1A1A' },
                       { swatch: '#ffffff', name: 'White', hex: '#FFFFFF', border: true },
                     ].map(c => (
@@ -211,7 +176,6 @@ export default function Tasks() {
                   </div>
                 </div>
 
-                {/* Typography */}
                 <div>
                   <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Typography</p>
                   <p style={{ fontFamily: 'Arial Black, sans-serif', fontSize: '1.4rem', fontWeight: 900, marginBottom: '4px', letterSpacing: '0.5px' }}>Arial Black</p>
@@ -221,25 +185,24 @@ export default function Tasks() {
                   </p>
                 </div>
 
-                {/* Logo mark */}
                 <div>
                   <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Logo mark</p>
                   <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '14px' }}>
-                    <svg viewBox="0 0 80 80" style={{ width: '56px', height: '56px' }}>
-                      <circle cx="40" cy="40" r="38" fill="#6abf1e" />
-                      <rect x="18" y="26" width="44" height="7" rx="3.5" fill="white" />
-                      <rect x="18" y="36.5" width="44" height="7" rx="3.5" fill="white" />
-                      <rect x="18" y="47" width="44" height="7" rx="3.5" fill="white" />
+                    <svg viewBox="0 0 80 80" style={{ width: '52px', height: '52px' }}>
+                      <circle cx="40" cy="40" r="38" fill="#76bc1a" />
+                      <rect x="22" y="22" width="28" height="9" rx="4.5" fill="white" />
+                      <rect x="16" y="35" width="40" height="9" rx="4.5" fill="white" />
+                      <rect x="16" y="48" width="40" height="9" rx="4.5" fill="white" />
                     </svg>
-                    <svg viewBox="0 0 80 80" style={{ width: '56px', height: '56px' }}>
+                    <svg viewBox="0 0 80 80" style={{ width: '52px', height: '52px' }}>
                       <circle cx="40" cy="40" r="38" fill="#1a1a1a" />
-                      <rect x="18" y="26" width="44" height="7" rx="3.5" fill="#6abf1e" />
-                      <rect x="18" y="36.5" width="44" height="7" rx="3.5" fill="#6abf1e" />
-                      <rect x="18" y="47" width="44" height="7" rx="3.5" fill="#6abf1e" />
+                      <rect x="22" y="22" width="28" height="9" rx="4.5" fill="#76bc1a" />
+                      <rect x="16" y="35" width="40" height="9" rx="4.5" fill="#76bc1a" />
+                      <rect x="16" y="48" width="40" height="9" rx="4.5" fill="#76bc1a" />
                     </svg>
                   </div>
                   <p style={{ fontSize: '0.85rem', color: 'var(--mid)', lineHeight: 1.75 }}>
-                    The circular mark uses three bars referencing an abstract &ldquo;E&rdquo; — scalable to favicon size. The dark variant swaps to green bars for digital contexts.
+                    The circular mark uses three staggered pill bars referencing an abstract &ldquo;E&rdquo; — scalable to favicon size. Dark variant uses green bars on black.
                   </p>
                 </div>
 
@@ -255,9 +218,9 @@ export default function Tasks() {
           <R>
             <p className="label">Task 3 — Bitmap Edit</p>
             <div className="rule" />
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Faculty banner</h2>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Faculty banner — modified in GIMP</h2>
             <p style={{ color: 'var(--mid)', maxWidth: '540px', lineHeight: 1.85, marginBottom: '48px', fontSize: '0.92rem' }}>
-              A web banner for the Faculty of Business &amp; Informatics. Source image adjusted for brightness, contrast, and saturation, then a text layer was added with a shadow for legibility.
+              A web banner for the Faculty of Business &amp; Informatics. Source image adjusted for brightness, contrast, and saturation, then a text layer added with a drop shadow for legibility.
             </p>
           </R>
 
@@ -268,22 +231,19 @@ export default function Tasks() {
               position: 'relative', overflow: 'hidden',
               border: '1px solid var(--faint)',
               display: 'flex', alignItems: 'center', padding: '0 48px',
-              gap: '32px'
+              gap: '28px'
             }}>
               <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.06\'/%3E%3C/svg%3E")', opacity: 0.5 }} />
-              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '40%', background: 'linear-gradient(to left, rgba(106,191,30,0.15), transparent)' }} />
-
-              {/* Mini logo in banner */}
-              <svg viewBox="0 0 80 80" style={{ width: '52px', height: '52px', flexShrink: 0, position: 'relative' }}>
-                <circle cx="40" cy="40" r="38" fill="#6abf1e" />
-                <rect x="18" y="26" width="44" height="7" rx="3.5" fill="white" />
-                <rect x="18" y="36.5" width="44" height="7" rx="3.5" fill="white" />
-                <rect x="18" y="47" width="44" height="7" rx="3.5" fill="white" />
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '40%', background: 'linear-gradient(to left, rgba(106,191,30,0.12), transparent)' }} />
+              <svg viewBox="0 0 80 80" style={{ width: '48px', height: '48px', flexShrink: 0, position: 'relative' }}>
+                <circle cx="40" cy="40" r="38" fill="#76bc1a" />
+                <rect x="22" y="22" width="28" height="9" rx="4.5" fill="white" />
+                <rect x="16" y="35" width="40" height="9" rx="4.5" fill="white" />
+                <rect x="16" y="48" width="40" height="9" rx="4.5" fill="white" />
               </svg>
-
               <div style={{ position: 'relative' }}>
-                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>Edutus Egyetem</p>
-                <h3 style={{ fontFamily: 'Arial Black, Arial, sans-serif', fontSize: 'clamp(1rem, 2.5vw, 1.8rem)', color: '#ffffff', textShadow: '0 2px 18px rgba(0,0,0,0.5)', fontWeight: 900, letterSpacing: '0.5px' }}>
+                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)', marginBottom: '6px' }}>Edutus Egyetem</p>
+                <h3 style={{ fontFamily: 'Arial Black, Arial, sans-serif', fontSize: 'clamp(1rem, 2.5vw, 1.8rem)', color: '#ffffff', textShadow: '0 2px 18px rgba(0,0,0,0.5)', fontWeight: 900 }}>
                   Faculty of Business &amp; Informatics
                 </h3>
               </div>
@@ -292,7 +252,7 @@ export default function Tasks() {
 
           <R delay={120}>
             <div className="card" style={{ marginTop: '20px' }}>
-              <p className="label" style={{ marginBottom: '12px' }}>Modifications made.</p>
+              <p className="label" style={{ marginBottom: '12px' }}>Modifications made in GIMP 2.10</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '16px' }}>
                 {[
                   { step: 'Brightness / Contrast', detail: '+15 brightness, +22 contrast — Colours → Brightness-Contrast' },
