@@ -59,25 +59,6 @@ const reviews = [
       'Add a motion preference media query — one line of CSS, massive accessibility improvement',
     ],
   },
-  {
-    type: 'Brochure',
-    name: 'Airbnb Host Handbook',
-    url: 'https://www.airbnb.com/help/article/1500',
-    problems: [
-      'Too many full-bleed section breaks — the rhythm becomes choppy rather than building momentum',
-      'Icon style is inconsistent across spreads: some flat, some outlined, one set with drop shadows',
-      'Margin widths vary between spreads in a way that feels like production error, not design intent',
-    ],
-    positives: [
-      'Photography selection is genuinely warm — hosts and homes that feel real and diverse',
-      'Tone of voice across copy and design language are in complete agreement, which is rare',
-      'Colour palette works globally — no cultural mis-steps in a product that serves 100+ countries',
-    ],
-    improvements: [
-      'Establish and enforce a consistent margin grid across all 40+ spreads',
-      'Unify icon library to one style — the inconsistency undermines the otherwise strong production quality',
-    ],
-  },
 ]
 
 export default function Review() {
