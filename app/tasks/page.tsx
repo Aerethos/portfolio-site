@@ -115,7 +115,7 @@ export default function Tasks() {
             <div className="rule" />
             <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Edutus Egyetem — SVG</h2>
             <p style={{ color: 'var(--mid)', maxWidth: '540px', lineHeight: 1.85, marginBottom: '48px', fontSize: '0.92rem' }}>
-              Recreated in vector format. A vector file scales to any size without ever losing quality — unlike a PNG or JPEG which blurs when enlarged.
+              Recreated in vector format. This SVG has been created in Figma.
             </p>
           </R>
 
