@@ -138,7 +138,7 @@ export default function Home() {
         ctx.font = `900 ${Math.min(W * 0.13, 130)}px 'Playfair Display', Georgia, serif`
         ctx.fillStyle = `rgba(244, 240, 232, ${textAlpha * 0.08})`
         ctx.textAlign = 'center'
-        ctx.fillText('NATHAN SFENDJI', W / 2, H / 2 + 40)
+        ctx.fillText(' ', W / 2, H / 2 + 40)
       }
 
       animId = requestAnimationFrame(tick)
