@@ -10,7 +10,7 @@ export default function Home() {
   const [introComplete, setIntroComplete] = useState(false)
   const [introVisible, setIntroVisible] = useState(true)
 
-  // Grid intro animation
+  // Grid intro — draws, then lines fall/collapse into hero positions
   useEffect(() => {
     const canvas = gridRef.current
     if (!canvas) return
@@ -19,48 +19,76 @@ export default function Home() {
 
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
-
     const W = canvas.width
     const H = canvas.height
-    const cols = 12
-    const rows = 8
+
+    const cols = 14
+    const rows = 9
     const cellW = W / cols
     const cellH = H / rows
 
-    // Each line has: start point, end point, progress 0-1, delay
-    const lines: { x1: number; y1: number; x2: number; y2: number; progress: number; delay: number; speed: number }[] = []
+    // Target positions — where lines will collapse INTO
+    // These roughly match where "Nathan" and "Sfendji" sit in the hero
+    const nameX = W * 0.08 + 48  // matches .wrap padding
+    const nathanY = H * 0.48      // roughly where "Nathan" baseline is
+    const sfendjiY = H * 0.60     // roughly where "Sfendji." baseline is
+
+    type Line = {
+      x1: number; y1: number; x2: number; y2: number
+      tx1: number; ty1: number; tx2: number; ty2: number
+      progress: number; delay: number; speed: number
+      collapseProgress: number
+    }
+
+    const lines: Line[] = []
 
     // Vertical lines
     for (let i = 0; i <= cols; i++) {
+      // Each vertical line collapses toward the name lines
+      const targetY = i % 2 === 0 ? nathanY : sfendjiY
       lines.push({
-        x1: i * cellW, y1: 0,
-        x2: i * cellW, y2: H,
-        progress: 0,
-        delay: i * 0.04,
-        speed: 0.028 + Math.random() * 0.02
+        x1: i * cellW, y1: 0, x2: i * cellW, y2: H,
+        tx1: nameX + (i / cols) * W * 0.7, ty1: targetY,
+        tx2: nameX + (i / cols) * W * 0.7, ty2: targetY,
+        progress: 0, delay: i * 0.035, speed: 0.03 + Math.random() * 0.015,
+        collapseProgress: 0
       })
     }
+
     // Horizontal lines
     for (let i = 0; i <= rows; i++) {
+      const isNathan = i <= rows / 2
+      const targetY = isNathan ? nathanY : sfendjiY
       lines.push({
-        x1: 0, y1: i * cellH,
-        x2: W, y2: i * cellH,
-        progress: 0,
-        delay: 0.3 + i * 0.06,
-        speed: 0.022 + Math.random() * 0.018
+        x1: 0, y1: i * cellH, x2: W, y2: i * cellH,
+        tx1: nameX, ty1: targetY,
+        tx2: nameX + W * 0.6, ty2: targetY,
+        progress: 0, delay: 0.25 + i * 0.05, speed: 0.025 + Math.random() * 0.015,
+        collapseProgress: 0
       })
     }
 
-    // Diagonal accent lines
-    lines.push({ x1: 0, y1: 0, x2: W * 0.4, y2: H, progress: 0, delay: 0.6, speed: 0.018 })
-    lines.push({ x1: W, y1: 0, x2: W * 0.6, y2: H, progress: 0, delay: 0.7, speed: 0.018 })
-    lines.push({ x1: W * 0.3, y1: 0, x2: W * 0.7, y2: H * 0.6, progress: 0, delay: 0.8, speed: 0.022 })
+    // A few diagonals for flair
+    lines.push({
+      x1: 0, y1: 0, x2: W * 0.5, y2: H,
+      tx1: nameX, ty1: nathanY, tx2: nameX + W * 0.4, ty2: nathanY,
+      progress: 0, delay: 0.5, speed: 0.02, collapseProgress: 0
+    })
+    lines.push({
+      x1: W, y1: 0, x2: W * 0.5, y2: H,
+      tx1: nameX, ty1: sfendjiY, tx2: nameX + W * 0.5, ty2: sfendjiY,
+      progress: 0, delay: 0.55, speed: 0.02, collapseProgress: 0
+    })
 
     let t = 0
-    let phase: 'draw' | 'hold' | 'fade' = 'draw'
+    let phase: 'draw' | 'hold' | 'collapse' | 'fade' = 'draw'
     let holdT = 0
-    let globalAlpha = 1
+    let bgAlpha = 1
+    let lineAlpha = 1
     let animId: number
+
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t
+    const easeInOut = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 
     const tick = () => {
       ctx.clearRect(0, 0, W, H)
@@ -69,9 +97,7 @@ export default function Home() {
         t += 0.016
         let allDone = true
         lines.forEach(l => {
-          if (t > l.delay) {
-            l.progress = Math.min(1, l.progress + l.speed)
-          }
+          if (t > l.delay) l.progress = Math.min(1, l.progress + l.speed)
           if (l.progress < 1) allDone = false
         })
         if (allDone) { phase = 'hold'; holdT = 0 }
@@ -79,66 +105,81 @@ export default function Home() {
 
       if (phase === 'hold') {
         holdT += 0.016
-        if (holdT > 0.6) phase = 'fade'
+        if (holdT > 0.5) { phase = 'collapse' }
+      }
+
+      if (phase === 'collapse') {
+        let allCollapsed = true
+        lines.forEach(l => {
+          l.collapseProgress = Math.min(1, l.collapseProgress + 0.022)
+          if (l.collapseProgress < 1) allCollapsed = false
+        })
+        // Fade bg while collapsing
+        bgAlpha = Math.max(0, bgAlpha - 0.015)
+        if (allCollapsed) { phase = 'fade' }
       }
 
       if (phase === 'fade') {
-        globalAlpha = Math.max(0, globalAlpha - 0.022)
-        if (globalAlpha <= 0) {
+        lineAlpha = Math.max(0, lineAlpha - 0.04)
+        bgAlpha = Math.max(0, bgAlpha - 0.03)
+        if (lineAlpha <= 0) {
           setIntroComplete(true)
-          setTimeout(() => setIntroVisible(false), 400)
+          setTimeout(() => setIntroVisible(false), 500)
           cancelAnimationFrame(animId)
           return
         }
       }
 
       // Draw background
-      ctx.fillStyle = `rgba(26, 24, 20, ${globalAlpha})`
+      ctx.fillStyle = `rgba(26, 24, 20, ${bgAlpha})`
       ctx.fillRect(0, 0, W, H)
 
       // Draw lines
       lines.forEach(l => {
         if (l.progress <= 0) return
-        const ex = l.x1 + (l.x2 - l.x1) * l.progress
-        const ey = l.y1 + (l.y2 - l.y1) * l.progress
+        const ep = easeInOut(l.collapseProgress)
+
+        // Current drawn endpoint (during draw phase)
+        const drawnX2 = l.x1 + (l.x2 - l.x1) * l.progress
+        const drawnY2 = l.y1 + (l.y2 - l.y1) * l.progress
+
+        // Interpolate toward target during collapse
+        const cx1 = lerp(l.x1, l.tx1, ep)
+        const cy1 = lerp(l.y1, l.ty1, ep)
+        const cx2 = lerp(drawnX2, l.tx2, ep)
+        const cy2 = lerp(drawnY2, l.ty2, ep)
+
+        const alpha = lineAlpha * (phase === 'collapse' || phase === 'fade'
+          ? 0.6 + 0.4 * (1 - ep)
+          : 0.35)
 
         ctx.beginPath()
-        ctx.moveTo(l.x1, l.y1)
-        ctx.lineTo(ex, ey)
-        ctx.strokeStyle = `rgba(212, 69, 12, ${0.35 * globalAlpha})`
-        ctx.lineWidth = 0.5
+        ctx.moveTo(cx1, cy1)
+        ctx.lineTo(cx2, cy2)
+        ctx.strokeStyle = `rgba(212, 69, 12, ${alpha})`
+        ctx.lineWidth = phase === 'collapse' || phase === 'fade' ? 0.5 + (1 - ep) * 1.5 : 0.5
         ctx.stroke()
 
-        // Bright leading dot
-        if (l.progress < 1) {
+        // Leading dot during draw phase
+        if (l.progress < 1 && phase === 'draw') {
           ctx.beginPath()
-          ctx.arc(ex, ey, 1.5, 0, Math.PI * 2)
-          ctx.fillStyle = `rgba(212, 69, 12, ${0.9 * globalAlpha})`
+          ctx.arc(drawnX2, drawnY2, 1.8, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(212, 69, 12, 0.9)`
           ctx.fill()
         }
       })
 
-      // Draw intersection dots at full grid intersections
-      if (phase === 'hold' || phase === 'fade') {
+      // Grid intersection dots during hold
+      if (phase === 'hold') {
+        const dotAlpha = Math.min(1, holdT * 5)
         for (let i = 0; i <= cols; i++) {
           for (let j = 0; j <= rows; j++) {
             ctx.beginPath()
-            ctx.arc(i * cellW, j * cellH, 2, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(212, 69, 12, ${0.5 * globalAlpha})`
+            ctx.arc(i * cellW, j * cellH, 1.5, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(212, 69, 12, ${dotAlpha * 0.55})`
             ctx.fill()
           }
         }
-      }
-
-      // Name reveal text during hold
-      if (phase === 'hold' || phase === 'fade') {
-        const textAlpha = phase === 'hold'
-          ? Math.min(1, holdT * 4)
-          : globalAlpha
-        ctx.font = `900 ${Math.min(W * 0.13, 130)}px 'Playfair Display', Georgia, serif`
-        ctx.fillStyle = `rgba(244, 240, 232, ${textAlpha * 0.08})`
-        ctx.textAlign = 'center'
-        ctx.fillText(' ', W / 2, H / 2 + 40)
       }
 
       animId = requestAnimationFrame(tick)
@@ -212,9 +253,7 @@ export default function Home() {
       return { x: bx + sx * bw, y: by + sy * bh }
     }
 
-    let planeT = 0
-    let trailPoints: { x: number; y: number }[] = []
-    let animId: number
+    let planeT = 0, trailPoints: { x: number; y: number }[] = [], animId: number
 
     const draw = () => {
       ctx.clearRect(0, 0, W(), H())
@@ -232,8 +271,7 @@ export default function Home() {
 
       const cp = { x: (dublin.x + budapest.x) / 2, y: Math.min(dublin.y, budapest.y) - h * 0.28 }
 
-      ctx.beginPath()
-      ctx.moveTo(dublin.x, dublin.y)
+      ctx.beginPath(); ctx.moveTo(dublin.x, dublin.y)
       ctx.quadraticCurveTo(cp.x, cp.y, budapest.x, budapest.y)
       ctx.setLineDash([5, 8]); ctx.strokeStyle = 'rgba(212,69,12,0.2)'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.setLineDash([])
 
@@ -283,13 +321,8 @@ export default function Home() {
         @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
         @keyframes fadeSlideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
         .hero-word { display:inline-block; animation: fadeSlideUp 0.9s cubic-bezier(.16,1,.3,1) both; }
-        .intro-canvas {
-          transition: opacity 0.4s ease;
-        }
-        .intro-canvas.done {
-          opacity: 0;
-          pointer-events: none;
-        }
+        .intro-canvas { transition: opacity 0.5s ease; }
+        .intro-canvas.done { opacity: 0; pointer-events: none; }
       `}</style>
 
       {/* ── GRID INTRO OVERLAY ── */}
