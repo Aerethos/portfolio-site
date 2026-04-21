@@ -6,179 +6,306 @@ import { useEffect, useRef, useState } from 'react'
 export default function Home() {
   const marqueeRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const gridRef = useRef<HTMLCanvasElement>(null)
-  const [introComplete, setIntroComplete] = useState(false)
-  const [introVisible, setIntroVisible] = useState(true)
+  const [revealed, setRevealed] = useState(false)
+  const [showContent, setShowContent] = useState(false)
 
-  // Grid intro — draws, then lines fall/collapse into hero positions
   useEffect(() => {
-    const canvas = gridRef.current
+    const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    canvas.width = window.innerWidth
-    canvas.height = window.innerHeight
-    const W = canvas.width
-    const H = canvas.height
-
-    const cols = 14
-    const rows = 9
-    const cellW = W / cols
-    const cellH = H / rows
-
-    // Target positions — where lines will collapse INTO
-    // These roughly match where "Nathan" and "Sfendji" sit in the hero
-    const nameX = W * 0.08 + 48  // matches .wrap padding
-    const nathanY = H * 0.48      // roughly where "Nathan" baseline is
-    const sfendjiY = H * 0.60     // roughly where "Sfendji." baseline is
-
-    type Line = {
-      x1: number; y1: number; x2: number; y2: number
-      tx1: number; ty1: number; tx2: number; ty2: number
-      progress: number; delay: number; speed: number
-      collapseProgress: number
+    const setSize = () => {
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
     }
+    setSize()
+    window.addEventListener('resize', setSize)
 
-    const lines: Line[] = []
+    const W = () => canvas.width
+    const H = () => canvas.height
 
-    // Vertical lines
-    for (let i = 0; i <= cols; i++) {
-      // Each vertical line collapses toward the name lines
-      const targetY = i % 2 === 0 ? nathanY : sfendjiY
-      lines.push({
-        x1: i * cellW, y1: 0, x2: i * cellW, y2: H,
-        tx1: nameX + (i / cols) * W * 0.7, ty1: targetY,
-        tx2: nameX + (i / cols) * W * 0.7, ty2: targetY,
-        progress: 0, delay: i * 0.035, speed: 0.03 + Math.random() * 0.015,
-        collapseProgress: 0
-      })
-    }
-
-    // Horizontal lines
-    for (let i = 0; i <= rows; i++) {
-      const isNathan = i <= rows / 2
-      const targetY = isNathan ? nathanY : sfendjiY
-      lines.push({
-        x1: 0, y1: i * cellH, x2: W, y2: i * cellH,
-        tx1: nameX, ty1: targetY,
-        tx2: nameX + W * 0.6, ty2: targetY,
-        progress: 0, delay: 0.25 + i * 0.05, speed: 0.025 + Math.random() * 0.015,
-        collapseProgress: 0
-      })
-    }
-
-    // A few diagonals for flair
-    lines.push({
-      x1: 0, y1: 0, x2: W * 0.5, y2: H,
-      tx1: nameX, ty1: nathanY, tx2: nameX + W * 0.4, ty2: nathanY,
-      progress: 0, delay: 0.5, speed: 0.02, collapseProgress: 0
-    })
-    lines.push({
-      x1: W, y1: 0, x2: W * 0.5, y2: H,
-      tx1: nameX, ty1: sfendjiY, tx2: nameX + W * 0.5, ty2: sfendjiY,
-      progress: 0, delay: 0.55, speed: 0.02, collapseProgress: 0
-    })
-
+    // ── Phase state ──
+    // 0: map draws in
+    // 1: plane travels Dublin → Budapest
+    // 2: plane zooms toward screen (grows + accelerates)
+    // 3: flash + reveal
+    let phase = 0
     let t = 0
-    let phase: 'draw' | 'hold' | 'collapse' | 'fade' = 'draw'
-    let holdT = 0
+
+    // Map points
+    const irelandPts = [
+      [0.45,0.05],[0.55,0.04],[0.65,0.08],[0.72,0.14],[0.78,0.22],[0.80,0.30],
+      [0.75,0.38],[0.82,0.44],[0.85,0.52],[0.80,0.60],[0.72,0.66],[0.78,0.72],
+      [0.75,0.80],[0.68,0.88],[0.58,0.94],[0.48,0.96],[0.38,0.92],[0.28,0.85],
+      [0.20,0.76],[0.15,0.66],[0.12,0.56],[0.15,0.46],[0.10,0.38],[0.12,0.28],
+      [0.20,0.20],[0.28,0.13],[0.36,0.08],[0.45,0.05]
+    ]
+    const hungaryPts = [
+      [0.08,0.32],[0.18,0.22],[0.28,0.16],[0.40,0.12],[0.52,0.08],[0.64,0.10],
+      [0.74,0.06],[0.84,0.10],[0.92,0.18],[0.96,0.28],[0.94,0.38],[0.98,0.46],
+      [0.94,0.54],[0.88,0.62],[0.80,0.70],[0.70,0.76],[0.60,0.82],[0.50,0.88],
+      [0.40,0.90],[0.30,0.86],[0.20,0.80],[0.12,0.72],[0.06,0.62],[0.04,0.50],
+      [0.06,0.40],[0.08,0.32]
+    ]
+
+    // Map bounds — centered, large
+    const mapW = W() * 0.28
+    const mapH = H() * 0.7
+    const irelandX = W() * 0.12
+    const irelandY = H() * 0.15
+    const hungaryX = W() * 0.58
+    const hungaryY = H() * 0.22
+    const hungaryW = W() * 0.30
+    const hungaryH = H() * 0.52
+
+    const getIrelandCentroid = () => {
+      const sx = irelandPts.reduce((a, p) => a + p[0], 0) / irelandPts.length
+      const sy = irelandPts.reduce((a, p) => a + p[1], 0) / irelandPts.length
+      return { x: irelandX + sx * mapW + mapW * 0.05, y: irelandY + sy * mapH + mapH * 0.18 }
+    }
+    const getHungaryCentroid = () => {
+      const sx = hungaryPts.reduce((a, p) => a + p[0], 0) / hungaryPts.length
+      const sy = hungaryPts.reduce((a, p) => a + p[1], 0) / hungaryPts.length
+      return { x: hungaryX + sx * hungaryW + hungaryW * 0.05, y: hungaryY + sy * hungaryH - hungaryH * 0.05 }
+    }
+
+    const dublin = getIrelandCentroid()
+    const budapest = getHungaryCentroid()
+    const cp = {
+      x: (dublin.x + budapest.x) / 2,
+      y: Math.min(dublin.y, budapest.y) - H() * 0.3
+    }
+
+    // Map draw progress
+    let mapAlpha = 0
+    let routeProgress = 0
+    let planeT = 0
+    let trailPts: { x: number; y: number; a: number }[] = []
+
+    // Zoom phase
+    let planeSize = 14
+    let zoomT = 0
+    let flashAlpha = 0
     let bgAlpha = 1
-    let lineAlpha = 1
-    let animId: number
 
     const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-    const easeInOut = (t: number) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
+    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
+    const easeIn = (t: number) => t * t * t
+
+    const drawCountry = (
+      pts: number[][], bx: number, by: number, bw: number, bh: number,
+      alpha: number
+    ) => {
+      ctx.beginPath()
+      pts.forEach(([nx, ny], i) => {
+        const px = bx + nx * bw, py = by + ny * bh
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)
+      })
+      ctx.closePath()
+      ctx.fillStyle = `rgba(212,69,12,${0.08 * alpha})`
+      ctx.fill()
+      ctx.strokeStyle = `rgba(212,69,12,${0.5 * alpha})`
+      ctx.lineWidth = 1.5
+      ctx.stroke()
+    }
+
+    const drawPlane = (x: number, y: number, angle: number, size: number, alpha: number) => {
+      ctx.save()
+      ctx.translate(x, y)
+      ctx.rotate(angle)
+      ctx.globalAlpha = alpha
+
+      // Body
+      ctx.beginPath()
+      ctx.moveTo(size, 0)
+      ctx.lineTo(-size * 0.6, size * 0.35)
+      ctx.lineTo(-size * 0.3, 0)
+      ctx.lineTo(-size * 0.6, -size * 0.35)
+      ctx.closePath()
+      ctx.fillStyle = 'rgba(212,69,12,1)'
+      ctx.fill()
+
+      // Wings
+      ctx.beginPath()
+      ctx.moveTo(size * 0.1, 0)
+      ctx.lineTo(-size * 0.2, size * 0.8)
+      ctx.lineTo(-size * 0.5, size * 0.15)
+      ctx.closePath()
+      ctx.fillStyle = 'rgba(212,69,12,0.7)'
+      ctx.fill()
+
+      ctx.beginPath()
+      ctx.moveTo(size * 0.1, 0)
+      ctx.lineTo(-size * 0.2, -size * 0.8)
+      ctx.lineTo(-size * 0.5, -size * 0.15)
+      ctx.closePath()
+      ctx.fill()
+
+      ctx.globalAlpha = 1
+      ctx.restore()
+    }
+
+    let animId: number
 
     const tick = () => {
-      ctx.clearRect(0, 0, W, H)
+      const w = W(), h = H()
+      ctx.clearRect(0, 0, w, h)
 
-      if (phase === 'draw') {
+      // ── BACKGROUND ──
+      ctx.fillStyle = `rgba(247, 244, 239, ${bgAlpha})`
+      ctx.fillRect(0, 0, w, h)
+
+      // ── PHASE 0: MAP FADES IN ──
+      if (phase === 0) {
         t += 0.016
-        let allDone = true
-        lines.forEach(l => {
-          if (t > l.delay) l.progress = Math.min(1, l.progress + l.speed)
-          if (l.progress < 1) allDone = false
-        })
-        if (allDone) { phase = 'hold'; holdT = 0 }
+        mapAlpha = Math.min(1, t * 1.2)
+        if (mapAlpha >= 1) { phase = 1; t = 0 }
       }
 
-      if (phase === 'hold') {
-        holdT += 0.016
-        if (holdT > 0.5) { phase = 'collapse' }
+      // ── PHASE 1: ROUTE + PLANE TRAVELS ──
+      if (phase === 1) {
+        t += 0.008
+        routeProgress = Math.min(1, t * 1.5)
+        planeT = Math.min(0.95, t * 0.8)
+        if (t > 1.4) { phase = 2; t = 0 }
       }
 
-      if (phase === 'collapse') {
-        let allCollapsed = true
-        lines.forEach(l => {
-          l.collapseProgress = Math.min(1, l.collapseProgress + 0.022)
-          if (l.collapseProgress < 1) allCollapsed = false
-        })
-        // Fade bg while collapsing
-        bgAlpha = Math.max(0, bgAlpha - 0.015)
-        if (allCollapsed) { phase = 'fade' }
+      // ── PHASE 2: PLANE ZOOMS TOWARD CAMERA ──
+      if (phase === 2) {
+        t += 0.016
+        zoomT = Math.min(1, t * 0.7)
+        planeSize = 14 + easeIn(zoomT) * 600
+        mapAlpha = Math.max(0, 1 - zoomT * 2)
+        if (zoomT > 0.85) {
+          flashAlpha = Math.min(1, (zoomT - 0.85) * 8)
+        }
+        if (zoomT >= 1) { phase = 3; t = 0 }
       }
 
-      if (phase === 'fade') {
-        lineAlpha = Math.max(0, lineAlpha - 0.04)
-        bgAlpha = Math.max(0, bgAlpha - 0.03)
-        if (lineAlpha <= 0) {
-          setIntroComplete(true)
-          setTimeout(() => setIntroVisible(false), 500)
+      // ── PHASE 3: FLASH + REVEAL ──
+      if (phase === 3) {
+        t += 0.025
+        flashAlpha = Math.max(0, 1 - t * 2.5)
+        bgAlpha = Math.max(0, 1 - t * 1.5)
+        if (bgAlpha <= 0) {
+          setRevealed(true)
+          setTimeout(() => setShowContent(true), 100)
           cancelAnimationFrame(animId)
           return
         }
       }
 
-      // Draw background
-      ctx.fillStyle = `rgba(26, 24, 20, ${bgAlpha})`
-      ctx.fillRect(0, 0, W, H)
+      // ── DRAW MAP ──
+      if (mapAlpha > 0) {
+        drawCountry(irelandPts, irelandX, irelandY, mapW, mapH, mapAlpha)
+        drawCountry(hungaryPts, hungaryX, hungaryY, hungaryW, hungaryH, mapAlpha)
 
-      // Draw lines
-      lines.forEach(l => {
-        if (l.progress <= 0) return
-        const ep = easeInOut(l.collapseProgress)
-
-        // Current drawn endpoint (during draw phase)
-        const drawnX2 = l.x1 + (l.x2 - l.x1) * l.progress
-        const drawnY2 = l.y1 + (l.y2 - l.y1) * l.progress
-
-        // Interpolate toward target during collapse
-        const cx1 = lerp(l.x1, l.tx1, ep)
-        const cy1 = lerp(l.y1, l.ty1, ep)
-        const cx2 = lerp(drawnX2, l.tx2, ep)
-        const cy2 = lerp(drawnY2, l.ty2, ep)
-
-        const alpha = lineAlpha * (phase === 'collapse' || phase === 'fade'
-          ? 0.6 + 0.4 * (1 - ep)
-          : 0.35)
-
+        // City dots
         ctx.beginPath()
-        ctx.moveTo(cx1, cy1)
-        ctx.lineTo(cx2, cy2)
-        ctx.strokeStyle = `rgba(212, 69, 12, ${alpha})`
-        ctx.lineWidth = phase === 'collapse' || phase === 'fade' ? 0.5 + (1 - ep) * 1.5 : 0.5
-        ctx.stroke()
+        ctx.arc(dublin.x, dublin.y, 5, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(212,69,12,${0.7 * mapAlpha})`
+        ctx.fill()
+        ctx.beginPath()
+        ctx.arc(budapest.x, budapest.y, 5, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(212,69,12,${0.9 * mapAlpha})`
+        ctx.fill()
 
-        // Leading dot during draw phase
-        if (l.progress < 1 && phase === 'draw') {
+        // Pulse on Budapest
+        if (phase === 1) {
+          const pulse = 8 + Math.sin(Date.now() / 400) * 3
           ctx.beginPath()
-          ctx.arc(drawnX2, drawnY2, 1.8, 0, Math.PI * 2)
-          ctx.fillStyle = `rgba(212, 69, 12, 0.9)`
-          ctx.fill()
+          ctx.arc(budapest.x, budapest.y, pulse, 0, Math.PI * 2)
+          ctx.strokeStyle = `rgba(212,69,12,${0.3 * mapAlpha})`
+          ctx.lineWidth = 1.5
+          ctx.stroke()
         }
-      })
 
-      // Grid intersection dots during hold
-      if (phase === 'hold') {
-        const dotAlpha = Math.min(1, holdT * 5)
-        for (let i = 0; i <= cols; i++) {
-          for (let j = 0; j <= rows; j++) {
-            ctx.beginPath()
-            ctx.arc(i * cellW, j * cellH, 1.5, 0, Math.PI * 2)
-            ctx.fillStyle = `rgba(212, 69, 12, ${dotAlpha * 0.55})`
-            ctx.fill()
+        // Labels
+        ctx.font = `500 13px 'DM Mono', monospace`
+        ctx.fillStyle = `rgba(26,24,20,${0.6 * mapAlpha})`
+        ctx.fillText('Waterford, Ireland', dublin.x - 10, dublin.y + 22)
+        ctx.fillStyle = `rgba(212,69,12,${0.8 * mapAlpha})`
+        ctx.fillText('Budapest, Hungary', budapest.x - 10, budapest.y + 22)
+
+        // Route (draws progressively)
+        if (routeProgress > 0) {
+          // Dashed background path
+          ctx.beginPath()
+          ctx.moveTo(dublin.x, dublin.y)
+          ctx.quadraticCurveTo(cp.x, cp.y, budapest.x, budapest.y)
+          ctx.setLineDash([4, 8])
+          ctx.strokeStyle = `rgba(212,69,12,${0.15 * mapAlpha})`
+          ctx.lineWidth = 1
+          ctx.stroke()
+          ctx.setLineDash([])
+
+          // Progressive route line
+          ctx.beginPath()
+          const steps = 60
+          for (let i = 0; i <= steps * routeProgress; i++) {
+            const s = i / steps
+            const px = (1-s)*(1-s)*dublin.x + 2*(1-s)*s*cp.x + s*s*budapest.x
+            const py = (1-s)*(1-s)*dublin.y + 2*(1-s)*s*cp.y + s*s*budapest.y
+            i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)
           }
+          ctx.strokeStyle = `rgba(212,69,12,${0.6 * mapAlpha})`
+          ctx.lineWidth = 1.5
+          ctx.setLineDash([])
+          ctx.stroke()
+        }
+      }
+
+      // ── DRAW PLANE ──
+      if (phase === 1 || phase === 2) {
+        const bt = phase === 2 ? 0.95 : planeT
+        const px2 = (1-bt)*(1-bt)*dublin.x + 2*(1-bt)*bt*cp.x + bt*bt*budapest.x
+        const py2 = (1-bt)*(1-bt)*dublin.y + 2*(1-bt)*bt*cp.y + bt*bt*budapest.y
+
+        let planeX = px2
+        let planeY = py2
+
+        if (phase === 2) {
+          const ep = easeIn(zoomT)
+          planeX = lerp(px2, w / 2, ep)
+          planeY = lerp(py2, h / 2, ep)
+        }
+
+        // Trail
+        if (phase === 1) {
+          trailPts.push({ x: planeX, y: planeY, a: 1 })
+          if (trailPts.length > 60) trailPts.shift()
+          trailPts.forEach((pt, idx) => {
+            ctx.beginPath()
+            ctx.arc(pt.x, pt.y, 1.5, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(212,69,12,${(idx / trailPts.length) * 0.4 * mapAlpha})`
+            ctx.fill()
+          })
+        }
+
+        // Angle
+        const bt2 = Math.min(bt + 0.01, 1)
+        const nx = (1-bt2)*(1-bt2)*dublin.x + 2*(1-bt2)*bt2*cp.x + bt2*bt2*budapest.x
+        const ny2 = (1-bt2)*(1-bt2)*dublin.y + 2*(1-bt2)*bt2*cp.y + bt2*bt2*budapest.y
+        let angle = Math.atan2(ny2 - py2, nx - px2)
+        if (phase === 2) angle = lerp(angle, 0, easeIn(zoomT))
+
+        const planeAlpha = phase === 2 ? Math.min(1, 1 - (zoomT - 0.7) * 3) : mapAlpha
+        drawPlane(planeX, planeY, angle, planeSize, Math.max(0, planeAlpha))
+      }
+
+      // ── FLASH ──
+      if (flashAlpha > 0) {
+        ctx.fillStyle = `rgba(247,244,239,${flashAlpha})`
+        ctx.fillRect(0, 0, w, h)
+        // Orange burst ring
+        const ringSize = flashAlpha > 0.5 ? (1 - flashAlpha) * w * 1.5 : 0
+        if (ringSize > 0) {
+          ctx.beginPath()
+          ctx.arc(w / 2, h / 2, ringSize, 0, Math.PI * 2)
+          ctx.strokeStyle = `rgba(212,69,12,${flashAlpha * 0.4})`
+          ctx.lineWidth = 3
+          ctx.stroke()
         }
       }
 
@@ -186,10 +313,12 @@ export default function Home() {
     }
 
     animId = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(animId)
+    return () => {
+      cancelAnimationFrame(animId)
+      window.removeEventListener('resize', setSize)
+    }
   }, [])
 
-  // Marquee
   useEffect(() => {
     const el = marqueeRef.current
     if (!el) return
@@ -203,140 +332,15 @@ export default function Home() {
     requestAnimationFrame(frame)
   }, [])
 
-  // Country map canvas
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-
-    const resize = () => {
-      canvas.width = canvas.offsetWidth * window.devicePixelRatio
-      canvas.height = canvas.offsetHeight * window.devicePixelRatio
-      ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-    }
-    resize()
-    window.addEventListener('resize', resize)
-
-    const W = () => canvas.offsetWidth
-    const H = () => canvas.offsetHeight
-
-    const irelandPoints = [
-      [0.45,0.05],[0.55,0.04],[0.65,0.08],[0.72,0.14],[0.78,0.22],[0.80,0.30],
-      [0.75,0.38],[0.82,0.44],[0.85,0.52],[0.80,0.60],[0.72,0.66],[0.78,0.72],
-      [0.75,0.80],[0.68,0.88],[0.58,0.94],[0.48,0.96],[0.38,0.92],[0.28,0.85],
-      [0.20,0.76],[0.15,0.66],[0.12,0.56],[0.15,0.46],[0.10,0.38],[0.12,0.28],
-      [0.20,0.20],[0.28,0.13],[0.36,0.08],[0.45,0.05]
-    ]
-    const hungaryPoints = [
-      [0.08,0.32],[0.18,0.22],[0.28,0.16],[0.40,0.12],[0.52,0.08],[0.64,0.10],
-      [0.74,0.06],[0.84,0.10],[0.92,0.18],[0.96,0.28],[0.94,0.38],[0.98,0.46],
-      [0.94,0.54],[0.88,0.62],[0.80,0.70],[0.70,0.76],[0.60,0.82],[0.50,0.88],
-      [0.40,0.90],[0.30,0.86],[0.20,0.80],[0.12,0.72],[0.06,0.62],[0.04,0.50],
-      [0.06,0.40],[0.08,0.32]
-    ]
-
-    const drawCountry = (points: number[][], bx: number, by: number, bw: number, bh: number, fill: string, stroke: string) => {
-      ctx.beginPath()
-      points.forEach(([nx, ny], i) => {
-        const px = bx + nx * bw, py = by + ny * bh
-        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)
-      })
-      ctx.closePath()
-      ctx.fillStyle = fill; ctx.fill()
-      ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke()
-    }
-
-    const getCentroid = (points: number[][], bx: number, by: number, bw: number, bh: number) => {
-      const sx = points.reduce((a, p) => a + p[0], 0) / points.length
-      const sy = points.reduce((a, p) => a + p[1], 0) / points.length
-      return { x: bx + sx * bw, y: by + sy * bh }
-    }
-
-    let planeT = 0, trailPoints: { x: number; y: number }[] = [], animId: number
-
-    const draw = () => {
-      ctx.clearRect(0, 0, W(), H())
-      const w = W(), h = H()
-      const iw = w * 0.18, ih = h * 0.55, ix = w * 0.08, iy = h * 0.22
-      const hw = w * 0.22, hh = h * 0.38, hx = w * 0.70, hy = h * 0.30
-
-      drawCountry(irelandPoints, ix, iy, iw, ih, 'rgba(212,69,12,0.07)', 'rgba(212,69,12,0.25)')
-      drawCountry(hungaryPoints, hx, hy, hw, hh, 'rgba(212,69,12,0.12)', 'rgba(212,69,12,0.35)')
-
-      const dublin = getCentroid(irelandPoints, ix, iy, iw, ih)
-      const budapest = getCentroid(hungaryPoints, hx, hy, hw, hh)
-      dublin.x += iw * 0.05; dublin.y += ih * 0.18
-      budapest.x += hw * 0.05; budapest.y -= hh * 0.05
-
-      const cp = { x: (dublin.x + budapest.x) / 2, y: Math.min(dublin.y, budapest.y) - h * 0.28 }
-
-      ctx.beginPath(); ctx.moveTo(dublin.x, dublin.y)
-      ctx.quadraticCurveTo(cp.x, cp.y, budapest.x, budapest.y)
-      ctx.setLineDash([5, 8]); ctx.strokeStyle = 'rgba(212,69,12,0.2)'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.setLineDash([])
-
-      const bt = planeT
-      const px = (1-bt)*(1-bt)*dublin.x + 2*(1-bt)*bt*cp.x + bt*bt*budapest.x
-      const py = (1-bt)*(1-bt)*dublin.y + 2*(1-bt)*bt*cp.y + bt*bt*budapest.y
-      const bt2 = Math.min(bt + 0.01, 1)
-      const px2 = (1-bt2)*(1-bt2)*dublin.x + 2*(1-bt2)*bt2*cp.x + bt2*bt2*budapest.x
-      const py2 = (1-bt2)*(1-bt2)*dublin.y + 2*(1-bt2)*bt2*cp.y + bt2*bt2*budapest.y
-      const angle = Math.atan2(py2 - py, px2 - px)
-
-      trailPoints.push({ x: px, y: py })
-      if (trailPoints.length > 50) trailPoints.shift()
-      trailPoints.forEach((pt, idx) => {
-        ctx.beginPath(); ctx.arc(pt.x, pt.y, 1.2, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(212,69,12,${(idx / trailPoints.length) * 0.35})`; ctx.fill()
-      })
-
-      ctx.save(); ctx.translate(px, py); ctx.rotate(angle)
-      ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(-6, 5); ctx.lineTo(-4, 0); ctx.lineTo(-6, -5); ctx.closePath()
-      ctx.fillStyle = 'rgba(212,69,12,0.9)'; ctx.fill(); ctx.restore()
-
-      ctx.beginPath(); ctx.arc(dublin.x, dublin.y, 4, 0, Math.PI * 2)
-      ctx.fillStyle = 'rgba(212,69,12,0.5)'; ctx.fill()
-      ctx.font = '500 10px monospace'; ctx.fillStyle = 'rgba(212,69,12,0.55)'
-      ctx.fillText('Dublin, Ireland', dublin.x - 8, dublin.y + 18)
-
-      const pulse = 5 + Math.sin(Date.now() / 500) * 2.5
-      ctx.beginPath(); ctx.arc(budapest.x, budapest.y, pulse, 0, Math.PI * 2)
-      ctx.strokeStyle = 'rgba(212,69,12,0.25)'; ctx.lineWidth = 1; ctx.stroke()
-      ctx.beginPath(); ctx.arc(budapest.x, budapest.y, 4, 0, Math.PI * 2)
-      ctx.fillStyle = 'rgba(212,69,12,0.85)'; ctx.fill()
-      ctx.font = '500 10px monospace'; ctx.fillStyle = 'rgba(212,69,12,0.8)'
-      ctx.fillText('Budapest ✦', budapest.x - 8, budapest.y + 18)
-
-      planeT += 0.003
-      if (planeT > 1) { planeT = 0; trailPoints = [] }
-      animId = requestAnimationFrame(draw)
-    }
-    draw()
-    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize) }
-  }, [])
-
   return (
     <>
       <style>{`
         @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
-        @keyframes fadeSlideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
-        .hero-word { display:inline-block; animation: fadeSlideUp 0.9s cubic-bezier(.16,1,.3,1) both; }
-        .intro-canvas { transition: opacity 0.5s ease; }
-        .intro-canvas.done { opacity: 0; pointer-events: none; }
+        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
+        .hero-word { display:inline-block; animation: fadeSlideUp 1s cubic-bezier(.16,1,.3,1) both; }
+        .hero-content { transition: opacity 0.6s ease; }
+        .hero-content.hidden { opacity: 0; pointer-events: none; }
       `}</style>
-
-      {/* ── GRID INTRO OVERLAY ── */}
-      {introVisible && (
-        <canvas
-          ref={gridRef}
-          className={`intro-canvas${introComplete ? ' done' : ''}`}
-          style={{
-            position: 'fixed', inset: 0, zIndex: 1000,
-            width: '100vw', height: '100vh',
-            pointerEvents: introComplete ? 'none' : 'all',
-          }}
-        />
-      )}
 
       {/* ── HERO ── */}
       <section style={{
@@ -345,23 +349,39 @@ export default function Home() {
         borderBottom: '1px solid var(--faint)', overflow: 'hidden',
         background: 'var(--bg)'
       }}>
-        <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }} />
 
+        {/* Intro canvas — full hero, drawn on top until reveal */}
+        <canvas
+          ref={canvasRef}
+          style={{
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            zIndex: revealed ? -1 : 10,
+            pointerEvents: 'none',
+            transition: 'opacity 0.3s ease',
+            opacity: revealed ? 0 : 1,
+          }}
+        />
+
+        {/* Decorative elements */}
         <div style={{ position: 'absolute', top: '32px', right: '48px', fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--faint)', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', zIndex: 3 }}>
           <span>Graphic Design & Web</span>
           <span style={{ color: 'var(--accent)' }}>Erasmus BIP · Budapest 2026</span>
         </div>
-
         <div style={{ position: 'absolute', top: 0, left: '48px', width: '1px', height: '100%', background: 'linear-gradient(to bottom, transparent 0%, var(--faint) 25%, var(--faint) 75%, transparent 100%)', zIndex: 2 }} />
         <div style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)', fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap', zIndex: 2 }}>Waterford · Ireland</div>
         <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'var(--faint)', opacity: 0.3, pointerEvents: 'none', zIndex: 2 }} />
 
-        <div className="wrap" style={{ position: 'relative', zIndex: 3, paddingTop: '0' }}>
+        {/* Hero content — hidden until reveal */}
+        <div
+          className={`hero-content${showContent ? '' : ' hidden'}`}
+          className="wrap"
+          style={{ position: 'relative', zIndex: 3 }}
+        >
           <div style={{ marginBottom: '40px' }}>
             <h1 className="hero-word" style={{ fontFamily: 'var(--serif)', fontWeight: 900, fontSize: 'clamp(4rem, 10vw, 10rem)', lineHeight: 0.95, letterSpacing: '-0.03em', display: 'block', marginBottom: '4px', animationDelay: '0.1s' }}>Nathan</h1>
             <h1 className="hero-word" style={{ fontFamily: 'var(--serif)', fontWeight: 400, fontStyle: 'italic', fontSize: 'clamp(4rem, 10vw, 10rem)', lineHeight: 0.95, letterSpacing: '-0.03em', color: 'var(--accent)', display: 'block', animationDelay: '0.22s' }}>Sfendji.</h1>
           </div>
-
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', maxWidth: '860px' }}>
             <R delay={400}>
               <p style={{ fontSize: '1rem', color: 'var(--mid)', lineHeight: 1.9 }}>
@@ -392,12 +412,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── MARQUEE STRIP ── */}
+      {/* ── MARQUEE ── */}
       <div style={{ background: 'var(--ink)', padding: '18px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
         <div ref={marqueeRef} style={{ display: 'flex', whiteSpace: 'nowrap' }}>
           {Array(4).fill(null).map((_, i) => (
             <span key={i} style={{ fontFamily: 'var(--mono)', fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
-              {['Nathan Sfendji', '·', 'AerEthos', '·', 'SETU Waterford', '·', 'Erasmus Budapest 2026', '·', 'Graphic Design & Web', '·', 'Next.js', '·'].map((w, j) => (
+              {['Nathan Sfendji','·','AerEthos','·','SETU Waterford','·','Erasmus Budapest 2026','·','Graphic Design & Web','·','Next.js','·'].map((w, j) => (
                 <span key={j} style={{ marginRight: '32px', color: w === '·' ? 'var(--accent)' : undefined }}>{w}</span>
               ))}
             </span>
@@ -405,7 +425,7 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ── QUICK FACTS STRIP ── */}
+      {/* ── FACTS ── */}
       <section style={{ padding: '0', background: 'var(--ink)' }}>
         <div className="wrap">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
@@ -461,7 +481,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── AERETHOS CALLOUT ── */}
+      {/* ── AERETHOS ── */}
       <section style={{ padding: '0', background: 'var(--bg2)', borderTop: '1px solid var(--faint)', borderBottom: '1px solid var(--faint)' }}>
         <div className="wrap">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '280px' }}>
