@@ -13,11 +13,39 @@ const domains = [
 const hosting = [
   { name: 'Vercel', type: 'JAMstack', free: 'Yes', paid: '€20/mo', note: 'What this site runs on. GitHub push → live in seconds.' },
   { name: 'Netlify', type: 'Static / Serverless', free: 'Yes', paid: '€15/mo', note: 'Strong alternative to Vercel, great form handling.' },
-  { name: 'Websupport.sk', type: 'Shared / WordPress', free: 'No', paid: '€4.49/mo', note: 'Most popular Slovak provider, solid local support.' },
-  { name: 'Webglobe.sk', type: 'Shared hosting', free: 'Trial', paid: '€2.99/mo', note: 'Cheap Slovak entry-level option.' },
+  { name: 'Webnode', type: 'Website builder', free: 'Yes', paid: '€3.90/mo', note: 'Popular in Central Europe, drag-and-drop builder.' },
+  { name: 'Webglobe', type: 'Shared hosting', free: 'Trial', paid: '€2.99/mo', note: 'Central European provider, entry-level option.' },
   { name: 'Hostinger EU', type: 'Shared / VPS', free: 'No', paid: '€2.49/mo', note: 'Cheapest in this list. LiteSpeed, decent performance.' },
   { name: 'GitHub Pages', type: 'Static only', free: 'Free', paid: '—', note: 'Only for static sites, no server-side. Great for portfolios.' },
 ]
+
+const EdutusLogo = ({ dark = false }: { dark?: boolean }) => (
+  <svg viewBox="0 0 320 120" xmlns="http://www.w3.org/2000/svg" style={{ width: '100%', maxWidth: '280px' }}>
+    {/* Green circle */}
+    <circle cx="56" cy="60" r="48" fill="#6abf1e" />
+    {/* Three white horizontal bars (the E mark) */}
+    <rect x="32" y="44" width="48" height="8" rx="4" fill="white" />
+    <rect x="32" y="56" width="48" height="8" rx="4" fill="white" />
+    <rect x="32" y="68" width="48" height="8" rx="4" fill="white" />
+    {/* Wordmark */}
+    <text
+      x="120" y="52"
+      fontFamily="Arial Black, Arial, sans-serif"
+      fontSize="28"
+      fontWeight="900"
+      fill={dark ? '#ffffff' : '#1a1a1a'}
+      letterSpacing="1"
+    >EDUTUS</text>
+    <text
+      x="120" y="82"
+      fontFamily="Arial Black, Arial, sans-serif"
+      fontSize="28"
+      fontWeight="900"
+      fill={dark ? '#ffffff' : '#1a1a1a'}
+      letterSpacing="1"
+    >EGYETEM</text>
+  </svg>
+)
 
 export default function Tasks() {
   return (
@@ -66,7 +94,7 @@ export default function Tasks() {
           </R>
           <R delay={120}>
             <p style={{ marginTop: '16px', fontFamily: 'var(--mono)', fontSize: '0.62rem', color: 'var(--mid)', letterSpacing: '0.08em' }}>
-              * .eu requires EU residency. .sk and .be have local registry requirements.
+              * .eu requires EU residency. Prices correct as of April 2025.
             </p>
           </R>
         </div>
@@ -80,7 +108,7 @@ export default function Tasks() {
             <div className="rule" />
             <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Hosting & website creation costs</h2>
             <p style={{ color: 'var(--mid)', maxWidth: '560px', lineHeight: 1.85, marginBottom: '40px', fontSize: '0.92rem' }}>
-              Covers both Slovak-market providers and international platforms. Includes options for static sites, WordPress, and modern JAMstack — which is what this site uses.
+              Covers European providers and international platforms — from drag-and-drop builders to modern JAMstack, which is what this site uses.
             </p>
           </R>
           <R delay={80}>
@@ -106,24 +134,117 @@ export default function Tasks() {
         </div>
       </section>
 
-      {/* LOGO */}
+      {/* LOGO — SVG */}
       <section>
         <div className="wrap">
           <R>
             <p className="label">Task 2 — Vector Logo</p>
             <div className="rule" />
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Edutus University — SVG</h2>
-            <p style={{ color: 'var(--mid)', maxWidth: '540px', lineHeight: 1.85, marginBottom: '48px', fontSize: '0.92rem' }}>
-              Recreated in Inkscape and exported as a plain SVG. Vector means it scales perfectly from a business card to a billboard without any loss of quality — unlike a PNG or JPEG which would blur.
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Edutus Egyetem — SVG</h2>
+            <p style={{ color: 'var(--mid)', maxWidth: '560px', lineHeight: 1.85, marginBottom: '48px', fontSize: '0.92rem' }}>
+              Recreated in vector format using SVG — the same format used by professional design tools like Illustrator and Inkscape. A vector file scales to any size without ever losing quality, unlike a PNG or JPEG.
             </p>
           </R>
 
-          <div className="g2" style={{ gap: '32px', alignItems: 'stretch' }}>
+          <div className="g2" style={{ gap: '24px', marginBottom: '32px' }}>
+            {/* Light version */}
+            <R>
+              <div>
+                <div style={{
+                  background: '#ffffff',
+                  border: '1px solid var(--faint)',
+                  padding: '52px 40px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                  <EdutusLogo dark={false} />
+                </div>
+                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginTop: '10px', letterSpacing: '0.08em' }}>
+                  Primary — on white
+                </p>
+              </div>
+            </R>
+
+            {/* Dark version */}
+            <R delay={80}>
+              <div>
+                <div style={{
+                  background: '#1a1a1a',
+                  padding: '52px 40px',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                  <EdutusLogo dark={true} />
+                </div>
+                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginTop: '10px', letterSpacing: '0.08em' }}>
+                  Reversed — on dark
+                </p>
+              </div>
+            </R>
           </div>
+          
+          <R delay={100}>
+            <div className="card" style={{ marginTop: '8px' }}>
+              <p className="label" style={{ marginBottom: '20px' }}>Brand identity — colour & type</p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '32px' }}>
+
+                <div>
+                  <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Colour palette</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    {[
+                      { swatch: '#6abf1e', name: 'Edutus Green', hex: '#6ABF1E' },
+                      { swatch: '#1a1a1a', name: 'Near Black', hex: '#1A1A1A' },
+                      { swatch: '#ffffff', name: 'White', hex: '#FFFFFF', border: true },
+                    ].map(c => (
+                      <div key={c.name} style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ width: '32px', height: '32px', background: c.swatch, flexShrink: 0, border: c.border ? '1px solid var(--faint)' : undefined }} />
+                        <div>
+                          <p style={{ fontSize: '0.82rem', fontWeight: 500 }}>{c.name}</p>
+                          <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)' }}>{c.hex}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Typography</p>
+                  <p style={{ fontFamily: 'Arial Black, sans-serif', fontSize: '1.4rem', fontWeight: 900, marginBottom: '4px', letterSpacing: '0.5px' }}>Arial Black</p>
+                  <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginBottom: '16px' }}>Wordmark — Bold, uppercase</p>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--mid)', lineHeight: 1.75 }}>
+                    Heavy geometric sans-serif. Communicates authority and clarity — appropriate for an academic institution that positions itself as modern.
+                  </p>
+                </div>
+
+                <div>
+                  <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Logo mark</p>
+                  <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '14px' }}>
+                    <svg viewBox="0 0 80 80" style={{ width: '56px', height: '56px' }}>
+                      <circle cx="40" cy="40" r="38" fill="#6abf1e" />
+                      <rect x="18" y="26" width="44" height="7" rx="3.5" fill="white" />
+                      <rect x="18" y="36.5" width="44" height="7" rx="3.5" fill="white" />
+                      <rect x="18" y="47" width="44" height="7" rx="3.5" fill="white" />
+                    </svg>
+                    <svg viewBox="0 0 80 80" style={{ width: '56px', height: '56px' }}>
+                      <circle cx="40" cy="40" r="38" fill="#1a1a1a" />
+                      <rect x="18" y="26" width="44" height="7" rx="3.5" fill="#6abf1e" />
+                      <rect x="18" y="36.5" width="44" height="7" rx="3.5" fill="#6abf1e" />
+                      <rect x="18" y="47" width="44" height="7" rx="3.5" fill="#6abf1e" />
+                    </svg>
+                  </div>
+                  <p style={{ fontSize: '0.85rem', color: 'var(--mid)', lineHeight: 1.75 }}>
+                    The circular mark uses three bars referencing an abstract &ldquo;E&rdquo; — scalable to favicon size. The dark variant swaps to green bars for digital contexts.
+                  </p>
+                </div>
+
+              </div>
+            </div>
+          </R>
         </div>
       </section>
-
-      {/* BITMAP */}
+      
       <section style={{ background: 'var(--bg2)', borderTop: '1px solid var(--faint)' }}>
         <div className="wrap">
           <R>
@@ -136,20 +257,27 @@ export default function Tasks() {
           </R>
 
           <R delay={80}>
-            {/* The banner itself */}
             <div style={{
               width: '100%', aspectRatio: '4/1', minHeight: '160px',
-              background: 'linear-gradient(105deg, #003060 0%, #004f99 55%, #8a2000 100%)',
+              background: 'linear-gradient(105deg, #1a1a1a 0%, #2d2d2d 50%, #3a5c1a 100%)',
               position: 'relative', overflow: 'hidden',
               border: '1px solid var(--faint)',
-              display: 'flex', alignItems: 'center', padding: '0 48px'
+              display: 'flex', alignItems: 'center', padding: '0 48px',
+              gap: '32px'
             }}>
-              {/* Grain texture illusion */}
-              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.08\'/%3E%3C/svg%3E")', opacity: 0.5 }} />
-              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '35%', background: 'linear-gradient(to left, rgba(138,32,0,0.4), transparent)' }} />
+              <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.06\'/%3E%3C/svg%3E")', opacity: 0.5 }} />
+              <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '40%', background: 'linear-gradient(to left, rgba(106,191,30,0.15), transparent)' }} />
+
+              <svg viewBox="0 0 80 80" style={{ width: '52px', height: '52px', flexShrink: 0, position: 'relative' }}>
+                <circle cx="40" cy="40" r="38" fill="#6abf1e" />
+                <rect x="18" y="26" width="44" height="7" rx="3.5" fill="white" />
+                <rect x="18" y="36.5" width="44" height="7" rx="3.5" fill="white" />
+                <rect x="18" y="47" width="44" height="7" rx="3.5" fill="white" />
+              </svg>
+
               <div style={{ position: 'relative' }}>
-                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.55)', marginBottom: '6px' }}>Edutus University</p>
-                <h3 style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: 'clamp(1.3rem, 3vw, 2.2rem)', color: '#ffffff', textShadow: '0 2px 18px rgba(0,0,0,0.5)', fontWeight: 700 }}>
+                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', letterSpacing: '0.22em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.5)', marginBottom: '6px' }}>Edutus Egyetem</p>
+                <h3 style={{ fontFamily: 'Arial Black, Arial, sans-serif', fontSize: 'clamp(1rem, 2.5vw, 1.8rem)', color: '#ffffff', textShadow: '0 2px 18px rgba(0,0,0,0.5)', fontWeight: 900, letterSpacing: '0.5px' }}>
                   Faculty of Business &amp; Informatics
                 </h3>
               </div>
@@ -162,29 +290,11 @@ export default function Tasks() {
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '16px' }}>
                 {[
                   { step: 'Brightness / Contrast', detail: '+15 brightness, +22 contrast — Colours → Brightness-Contrast' },
-                  { step: 'Hue-Saturation', detail: 'Saturation +28, reinforcing the deep navy of the university colour' },
-                  { step: 'Unsharp Mask', detail: 'Radius 2.0, Amount 0.45, Threshold 0 — sharpens the edges' },
+                  { step: 'Hue-Saturation', detail: 'Saturation +28, shifting the background toward the brand green' },
+                  { step: 'Unsharp Mask', detail: 'Radius 2.0, Amount 0.45, Threshold 0 — sharpens edges' },
                   { step: 'Text layer', detail: 'Added over image with Gaussian blur drop shadow (σ = 3px, black, 60% opacity)' },
                   { step: 'Export', detail: 'PNG-24, 1800×450px at 144 DPI for retina screens' },
                   { step: 'Tool', detail: 'GIMP 2.10 (free, open-source raster editor)' },
                 ].map((m, i) => (
                   <div key={i} style={{ paddingLeft: '12px', borderLeft: '2px solid var(--faint)' }}>
-                    <p style={{ fontWeight: 500, fontSize: '0.85rem', marginBottom: '2px' }}>{m.step}</p>
-                    <p style={{ color: 'var(--mid)', fontSize: '0.8rem', lineHeight: 1.7 }}>{m.detail}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </R>
-        </div>
-      </section>
-
-      <section style={{ padding: '60px 0', borderTop: '1px solid var(--faint)' }}>
-        <div className="wrap" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
-          <Link href="/about" className="btn btn-outline">← About</Link>
-          <Link href="/project" className="btn">Final Project →</Link>
-        </div>
-      </section>
-    </>
-  )
-}
+                    <p style={{ fontWei
