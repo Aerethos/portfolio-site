@@ -28,7 +28,7 @@ export default function Tasks() {
           <R>
             <p className="label" style={{ marginBottom: '12px' }}>Weekly Tasks — 50%</p>
             <h1>The work.</h1>
-            <p className="sub">Domain research, web hosting costs, a vector logo, and a bitmap edit. All documented here.</p>
+            <p className="sub">Domain research, web hosting costs, a vector logo, and a bitmap edit.</p>
           </R>
         </div>
       </div>
