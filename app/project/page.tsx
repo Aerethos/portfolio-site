@@ -192,44 +192,11 @@ export default function Project() {
             </div>
           </R>
 
-          {/* ── 04 MENU ── */}
+          {/* ── 04 OPENING HOURS ── */}
           <R>
             <div style={{ marginBottom: '80px' }}>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px' }}>
                 <span style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>04</span>
-                <h3 className="ae-sans" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Graduation Event Menu</h3>
-                <span style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', color: 'var(--mid)', marginLeft: 'auto' }}>A5 · two-colour</span>
-              </div>
-              <div style={{ background: '#fafaf8', border: '1px solid var(--faint)', maxWidth: '340px', overflow: 'hidden' }}>
-                {/* Menu header */}
-                <div style={{ background: '#001E3C', padding: '32px 36px' }}>
-                  <p className="ae-serif" style={{ fontStyle: 'italic', fontWeight: 300, fontSize: '1.5rem', color: '#CFC9B8', marginBottom: '4px' }}>AerEthos</p>
-                  <div style={{ width: '100%', height: '1px', background: 'rgba(176,138,74,0.4)', marginBottom: '8px' }} />
-                  <p className="ae-sans" style={{ fontSize: '0.5rem', fontWeight: 300, letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B08A4A' }}>Graduation Evening · 2025</p>
-                </div>
-                {/* Menu body */}
-                <div style={{ padding: '32px 36px' }}>
-                  {[
-                    { course: 'Starter', item: 'Roasted Red Pepper Soup', note: 'sourdough, crème fraîche' },
-                    { course: 'Main', item: 'Herb-Crusted Chicken', note: 'dauphinoise, seasonal greens' },
-                    { course: 'Dessert', item: 'Dark Chocolate Torte', note: 'vanilla cream, raspberry' },
-                  ].map((row, i) => (
-                    <div key={i} style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: i < 2 ? '1px solid var(--faint)' : undefined }}>
-                      <p className="ae-sans" style={{ fontSize: '0.5rem', fontWeight: 500, letterSpacing: '0.16em', textTransform: 'uppercase', color: '#B08A4A', marginBottom: '4px' }}>{row.course}</p>
-                      <p className="ae-serif" style={{ fontSize: '1rem', fontWeight: 400, color: '#001E3C', marginBottom: '2px' }}>{row.item}</p>
-                      <p className="ae-serif" style={{ fontSize: '0.78rem', fontStyle: 'italic', color: 'var(--mid)' }}>{row.note}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </R>
-
-          {/* ── 05 OPENING HOURS ── */}
-          <R>
-            <div style={{ marginBottom: '80px' }}>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px' }}>
-                <span style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>05</span>
                 <h3 className="ae-sans" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Opening Hours Poster</h3>
                 <span style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', color: 'var(--mid)', marginLeft: 'auto' }}>A2 poster + A6 card</span>
               </div>
@@ -251,11 +218,11 @@ export default function Project() {
             </div>
           </R>
 
-          {/* ── 06 WEBSITE ── */}
+          {/* ── 05 WEBSITE ── */}
           <R>
             <div style={{ marginBottom: '40px' }}>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '24px' }}>
-                <span style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>06</span>
+                <span style={{ fontFamily: 'Cormorant Garamond, serif', fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>05</span>
                 <h3 className="ae-sans" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Website Mockup</h3>
                 <span style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', color: 'var(--mid)', marginLeft: 'auto' }}>Figma · desktop + mobile</span>
               </div>
