@@ -255,7 +255,7 @@ export default function Tasks() {
           <R>
             <p className="label">Task 3 — Bitmap Edit</p>
             <div className="rule" />
-            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Faculty banner — modified in GIMP</h2>
+            <h2 style={{ fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', marginBottom: '12px' }}>Faculty banner</h2>
             <p style={{ color: 'var(--mid)', maxWidth: '540px', lineHeight: 1.85, marginBottom: '48px', fontSize: '0.92rem' }}>
               A web banner for the Faculty of Business &amp; Informatics. Source image adjusted for brightness, contrast, and saturation, then a text layer was added with a shadow for legibility.
             </p>
@@ -292,7 +292,7 @@ export default function Tasks() {
 
           <R delay={120}>
             <div className="card" style={{ marginTop: '20px' }}>
-              <p className="label" style={{ marginBottom: '12px' }}>Modifications made in GIMP 2.10</p>
+              <p className="label" style={{ marginBottom: '12px' }}>Modifications made.</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '16px' }}>
                 {[
                   { step: 'Brightness / Contrast', detail: '+15 brightness, +22 contrast — Colours → Brightness-Contrast' },
