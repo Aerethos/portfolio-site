@@ -94,7 +94,7 @@ export default function Tasks() {
           </R>
           <R delay={120}>
             <p style={{ marginTop: '16px', fontFamily: 'var(--mono)', fontSize: '0.62rem', color: 'var(--mid)', letterSpacing: '0.08em' }}>
-              * .eu requires EU residency. Prices correct as of April 2025.
+              * .eu requires EU residency. Prices correct as of April 2026.
             </p>
           </R>
         </div>
