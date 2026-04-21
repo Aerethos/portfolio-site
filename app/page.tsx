@@ -25,15 +25,9 @@ export default function Home() {
     const W = () => canvas.width
     const H = () => canvas.height
 
-    // ── Phase state ──
-    // 0: map draws in
-    // 1: plane travels Dublin → Budapest
-    // 2: plane zooms toward screen (grows + accelerates)
-    // 3: flash + reveal
     let phase = 0
     let t = 0
 
-    // Map points
     const irelandPts = [
       [0.45,0.05],[0.55,0.04],[0.65,0.08],[0.72,0.14],[0.78,0.22],[0.80,0.30],
       [0.75,0.38],[0.82,0.44],[0.85,0.52],[0.80,0.60],[0.72,0.66],[0.78,0.72],
@@ -49,7 +43,6 @@ export default function Home() {
       [0.06,0.40],[0.08,0.32]
     ]
 
-    // Map bounds — centered, large
     const mapW = W() * 0.28
     const mapH = H() * 0.7
     const irelandX = W() * 0.12
@@ -77,25 +70,20 @@ export default function Home() {
       y: Math.min(dublin.y, budapest.y) - H() * 0.3
     }
 
-    // Map draw progress
     let mapAlpha = 0
     let routeProgress = 0
     let planeT = 0
-    let trailPts: { x: number; y: number; a: number }[] = []
-
-    // Zoom phase
+    let trailPts: { x: number; y: number }[] = []
     let planeSize = 14
     let zoomT = 0
     let flashAlpha = 0
     let bgAlpha = 1
 
-    const lerp = (a: number, b: number, t: number) => a + (b - a) * t
-    const easeOut = (t: number) => 1 - Math.pow(1 - t, 3)
     const easeIn = (t: number) => t * t * t
+    const lerp = (a: number, b: number, t: number) => a + (b - a) * t
 
     const drawCountry = (
-      pts: number[][], bx: number, by: number, bw: number, bh: number,
-      alpha: number
+      pts: number[][], bx: number, by: number, bw: number, bh: number, alpha: number
     ) => {
       ctx.beginPath()
       pts.forEach(([nx, ny], i) => {
@@ -115,8 +103,6 @@ export default function Home() {
       ctx.translate(x, y)
       ctx.rotate(angle)
       ctx.globalAlpha = alpha
-
-      // Body
       ctx.beginPath()
       ctx.moveTo(size, 0)
       ctx.lineTo(-size * 0.6, size * 0.35)
@@ -125,8 +111,6 @@ export default function Home() {
       ctx.closePath()
       ctx.fillStyle = 'rgba(212,69,12,1)'
       ctx.fill()
-
-      // Wings
       ctx.beginPath()
       ctx.moveTo(size * 0.1, 0)
       ctx.lineTo(-size * 0.2, size * 0.8)
@@ -134,14 +118,12 @@ export default function Home() {
       ctx.closePath()
       ctx.fillStyle = 'rgba(212,69,12,0.7)'
       ctx.fill()
-
       ctx.beginPath()
       ctx.moveTo(size * 0.1, 0)
       ctx.lineTo(-size * 0.2, -size * 0.8)
       ctx.lineTo(-size * 0.5, -size * 0.15)
       ctx.closePath()
       ctx.fill()
-
       ctx.globalAlpha = 1
       ctx.restore()
     }
@@ -152,18 +134,18 @@ export default function Home() {
       const w = W(), h = H()
       ctx.clearRect(0, 0, w, h)
 
-      // ── BACKGROUND ──
-      ctx.fillStyle = `rgba(247, 244, 239, ${bgAlpha})`
+      // Background
+      ctx.fillStyle = `rgba(247,244,239,${bgAlpha})`
       ctx.fillRect(0, 0, w, h)
 
-      // ── PHASE 0: MAP FADES IN ──
+      // Phase 0: map fades in
       if (phase === 0) {
         t += 0.016
         mapAlpha = Math.min(1, t * 1.2)
         if (mapAlpha >= 1) { phase = 1; t = 0 }
       }
 
-      // ── PHASE 1: ROUTE + PLANE TRAVELS ──
+      // Phase 1: plane travels route
       if (phase === 1) {
         t += 0.008
         routeProgress = Math.min(1, t * 1.5)
@@ -171,19 +153,17 @@ export default function Home() {
         if (t > 1.4) { phase = 2; t = 0 }
       }
 
-      // ── PHASE 2: PLANE ZOOMS TOWARD CAMERA ──
+      // Phase 2: plane zooms toward camera
       if (phase === 2) {
         t += 0.016
         zoomT = Math.min(1, t * 0.7)
         planeSize = 14 + easeIn(zoomT) * 600
         mapAlpha = Math.max(0, 1 - zoomT * 2)
-        if (zoomT > 0.85) {
-          flashAlpha = Math.min(1, (zoomT - 0.85) * 8)
-        }
+        if (zoomT > 0.85) flashAlpha = Math.min(1, (zoomT - 0.85) * 8)
         if (zoomT >= 1) { phase = 3; t = 0 }
       }
 
-      // ── PHASE 3: FLASH + REVEAL ──
+      // Phase 3: flash + reveal
       if (phase === 3) {
         t += 0.025
         flashAlpha = Math.max(0, 1 - t * 2.5)
@@ -196,22 +176,21 @@ export default function Home() {
         }
       }
 
-      // ── DRAW MAP ──
+      // Draw map
       if (mapAlpha > 0) {
         drawCountry(irelandPts, irelandX, irelandY, mapW, mapH, mapAlpha)
         drawCountry(hungaryPts, hungaryX, hungaryY, hungaryW, hungaryH, mapAlpha)
 
-        // City dots
         ctx.beginPath()
         ctx.arc(dublin.x, dublin.y, 5, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(212,69,12,${0.7 * mapAlpha})`
         ctx.fill()
+
         ctx.beginPath()
         ctx.arc(budapest.x, budapest.y, 5, 0, Math.PI * 2)
         ctx.fillStyle = `rgba(212,69,12,${0.9 * mapAlpha})`
         ctx.fill()
 
-        // Pulse on Budapest
         if (phase === 1) {
           const pulse = 8 + Math.sin(Date.now() / 400) * 3
           ctx.beginPath()
@@ -221,16 +200,13 @@ export default function Home() {
           ctx.stroke()
         }
 
-        // Labels
         ctx.font = `500 13px 'DM Mono', monospace`
         ctx.fillStyle = `rgba(26,24,20,${0.6 * mapAlpha})`
         ctx.fillText('Waterford, Ireland', dublin.x - 10, dublin.y + 22)
         ctx.fillStyle = `rgba(212,69,12,${0.8 * mapAlpha})`
         ctx.fillText('Budapest, Hungary', budapest.x - 10, budapest.y + 22)
 
-        // Route (draws progressively)
         if (routeProgress > 0) {
-          // Dashed background path
           ctx.beginPath()
           ctx.moveTo(dublin.x, dublin.y)
           ctx.quadraticCurveTo(cp.x, cp.y, budapest.x, budapest.y)
@@ -240,7 +216,6 @@ export default function Home() {
           ctx.stroke()
           ctx.setLineDash([])
 
-          // Progressive route line
           ctx.beginPath()
           const steps = 60
           for (let i = 0; i <= steps * routeProgress; i++) {
@@ -251,29 +226,27 @@ export default function Home() {
           }
           ctx.strokeStyle = `rgba(212,69,12,${0.6 * mapAlpha})`
           ctx.lineWidth = 1.5
-          ctx.setLineDash([])
           ctx.stroke()
         }
       }
 
-      // ── DRAW PLANE ──
+      // Draw plane
       if (phase === 1 || phase === 2) {
         const bt = phase === 2 ? 0.95 : planeT
-        const px2 = (1-bt)*(1-bt)*dublin.x + 2*(1-bt)*bt*cp.x + bt*bt*budapest.x
-        const py2 = (1-bt)*(1-bt)*dublin.y + 2*(1-bt)*bt*cp.y + bt*bt*budapest.y
+        const bpx = (1-bt)*(1-bt)*dublin.x + 2*(1-bt)*bt*cp.x + bt*bt*budapest.x
+        const bpy = (1-bt)*(1-bt)*dublin.y + 2*(1-bt)*bt*cp.y + bt*bt*budapest.y
 
-        let planeX = px2
-        let planeY = py2
+        let planeX = bpx
+        let planeY = bpy
 
         if (phase === 2) {
           const ep = easeIn(zoomT)
-          planeX = lerp(px2, w / 2, ep)
-          planeY = lerp(py2, h / 2, ep)
+          planeX = lerp(bpx, w / 2, ep)
+          planeY = lerp(bpy, h / 2, ep)
         }
 
-        // Trail
         if (phase === 1) {
-          trailPts.push({ x: planeX, y: planeY, a: 1 })
+          trailPts.push({ x: planeX, y: planeY })
           if (trailPts.length > 60) trailPts.shift()
           trailPts.forEach((pt, idx) => {
             ctx.beginPath()
@@ -283,22 +256,20 @@ export default function Home() {
           })
         }
 
-        // Angle
         const bt2 = Math.min(bt + 0.01, 1)
         const nx = (1-bt2)*(1-bt2)*dublin.x + 2*(1-bt2)*bt2*cp.x + bt2*bt2*budapest.x
         const ny2 = (1-bt2)*(1-bt2)*dublin.y + 2*(1-bt2)*bt2*cp.y + bt2*bt2*budapest.y
-        let angle = Math.atan2(ny2 - py2, nx - px2)
+        let angle = Math.atan2(ny2 - bpy, nx - bpx)
         if (phase === 2) angle = lerp(angle, 0, easeIn(zoomT))
 
-        const planeAlpha = phase === 2 ? Math.min(1, 1 - (zoomT - 0.7) * 3) : mapAlpha
+        const planeAlpha = phase === 2 ? Math.max(0, 1 - (zoomT - 0.7) * 3) : mapAlpha
         drawPlane(planeX, planeY, angle, planeSize, Math.max(0, planeAlpha))
       }
 
-      // ── FLASH ──
+      // Flash
       if (flashAlpha > 0) {
         ctx.fillStyle = `rgba(247,244,239,${flashAlpha})`
         ctx.fillRect(0, 0, w, h)
-        // Orange burst ring
         const ringSize = flashAlpha > 0.5 ? (1 - flashAlpha) * w * 1.5 : 0
         if (ringSize > 0) {
           ctx.beginPath()
@@ -336,10 +307,8 @@ export default function Home() {
     <>
       <style>{`
         @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
-        @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:none} }
-        .hero-word { display:inline-block; animation: fadeSlideUp 1s cubic-bezier(.16,1,.3,1) both; }
-        .hero-content { transition: opacity 0.6s ease; }
-        .hero-content.hidden { opacity: 0; pointer-events: none; }
+        @keyframes fadeSlideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+        .hero-word{display:inline-block;animation:fadeSlideUp 1s cubic-bezier(.16,1,.3,1) both}
       `}</style>
 
       {/* ── HERO ── */}
@@ -350,7 +319,7 @@ export default function Home() {
         background: 'var(--bg)'
       }}>
 
-        {/* Intro canvas — full hero, drawn on top until reveal */}
+        {/* Intro canvas */}
         <canvas
           ref={canvasRef}
           style={{
@@ -358,12 +327,12 @@ export default function Home() {
             width: '100%', height: '100%',
             zIndex: revealed ? -1 : 10,
             pointerEvents: 'none',
-            transition: 'opacity 0.3s ease',
             opacity: revealed ? 0 : 1,
+            transition: 'opacity 0.3s ease',
           }}
         />
 
-        {/* Decorative elements */}
+        {/* Decorative */}
         <div style={{ position: 'absolute', top: '32px', right: '48px', fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--faint)', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', zIndex: 3 }}>
           <span>Graphic Design & Web</span>
           <span style={{ color: 'var(--accent)' }}>Erasmus BIP · Budapest 2026</span>
@@ -372,11 +341,15 @@ export default function Home() {
         <div style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)', fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap', zIndex: 2 }}>Waterford · Ireland</div>
         <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'var(--faint)', opacity: 0.3, pointerEvents: 'none', zIndex: 2 }} />
 
-        {/* Hero content — hidden until reveal */}
+        {/* Hero content */}
         <div
-          className={`hero-content${showContent ? '' : ' hidden'}`}
           className="wrap"
-          style={{ position: 'relative', zIndex: 3 }}
+          style={{
+            position: 'relative', zIndex: 3,
+            opacity: showContent ? 1 : 0,
+            transition: 'opacity 0.6s ease',
+            pointerEvents: showContent ? 'auto' : 'none',
+          }}
         >
           <div style={{ marginBottom: '40px' }}>
             <h1 className="hero-word" style={{ fontFamily: 'var(--serif)', fontWeight: 900, fontSize: 'clamp(4rem, 10vw, 10rem)', lineHeight: 0.95, letterSpacing: '-0.03em', display: 'block', marginBottom: '4px', animationDelay: '0.1s' }}>Nathan</h1>
@@ -430,9 +403,9 @@ export default function Home() {
         <div className="wrap">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
             {[
-              { num: '20', label: 'Years old' },
-              { num: 'IE', label: 'Waterford, Ireland' },
-              { num: 'BUD', label: 'Erasmus · Budapest' },
+              { num: '20',   label: 'Years old' },
+              { num: 'IE',   label: 'Waterford, Ireland' },
+              { num: 'BUD',  label: 'Erasmus · Budapest' },
               { num: '\'23', label: 'AerEthos founded' },
             ].map((f, i) => (
               <R key={i} delay={i * 60}>
