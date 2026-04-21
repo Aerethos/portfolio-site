@@ -47,10 +47,10 @@ const reviews = [
     problems: [
       'Animation-heavy home page has no prefers-reduced-motion support — an accessibility gap for a company that should know better',
       'Two primary CTAs ("Start now" + "Contact sales") creates decision paralysis for new visitors',
-      'Some gradient overlays in mid-page sections push text below WCAG AA contrast ratios',
+      'Some gradient overlays in mid-page sections push text below usual contrast ratios',
     ],
     positives: [
-      'The gradient mesh background on the hero is genuinely beautiful — sets tone in under a second',
+      'The gradient mesh background on the hero is genuinely brilliant — sets tone in under a second',
       'Typographic scale is masterclass level — every font size decision feels deliberate',
       'Developer trust signals (code snippets, API docs links) are woven into the marketing narrative seamlessly',
     ],
