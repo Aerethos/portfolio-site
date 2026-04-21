@@ -28,7 +28,7 @@ export default function About() {
 
                 <div style={{ marginTop: '40px', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                   <a href="https://aerethos.com" target="_blank" rel="noreferrer" className="btn">AerEthos →</a>
-                  <a href="https://linkedin.com/in/nathansfendji" target="_blank" rel="noreferrer" className="btn btn-outline">LinkedIn</a>
+                  <a href="https://www.linkedin.com/in/nathan-sfendji-575597238/" target="_blank" rel="noreferrer" className="btn btn-outline">LinkedIn</a>
                 </div>
               </div>
             </R>
