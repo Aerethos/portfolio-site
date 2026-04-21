@@ -1,5 +1,6 @@
 'use client'
 import R from '@/components/R'
+import Link from 'next/link'
 import { useEffect, useRef } from 'react'
 
 export default function Home() {
@@ -35,7 +36,6 @@ export default function Home() {
         background: 'var(--bg)'
       }}>
 
-        {/* Top-right tag */}
         <div style={{
           position: 'absolute', top: '32px', right: '48px',
           fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.14em',
@@ -47,7 +47,6 @@ export default function Home() {
           <span style={{ color: 'var(--accent)' }}>Erasmus BIP · Budapest 2026</span>
         </div>
 
-        {/* Left vertical rule with label */}
         <div style={{ position: 'absolute', top: 0, left: '48px', width: '1px', height: '100%', background: 'linear-gradient(to bottom, transparent 0%, var(--faint) 25%, var(--faint) 75%, transparent 100%)' }} />
         <div style={{
           position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)',
@@ -55,7 +54,6 @@ export default function Home() {
           textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap'
         }}>Waterford · Ireland</div>
 
-        {/* Large ghost letterform */}
         <div aria-hidden style={{
           position: 'absolute', right: '-80px', bottom: '-60px',
           fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 900,
@@ -64,41 +62,28 @@ export default function Home() {
           userSelect: 'none', pointerEvents: 'none', letterSpacing: '-0.05em'
         }}>N</div>
 
-        {/* Horizontal rule across mid-page */}
         <div style={{
           position: 'absolute', top: '50%', left: 0, right: 0,
           height: '1px', background: 'var(--faint)', opacity: 0.4,
           pointerEvents: 'none'
         }} />
 
-        {/* Main content */}
         <div className="wrap" style={{ position: 'relative', zIndex: 2, paddingTop: '0' }}>
-
-          {/* Name block */}
           <div style={{ marginBottom: '40px' }}>
-            <h1
-              className="hero-word"
-              style={{
-                fontFamily: 'var(--serif)', fontWeight: 900,
-                fontSize: 'clamp(4rem, 10vw, 10rem)',
-                lineHeight: 0.95, letterSpacing: '-0.03em',
-                display: 'block', marginBottom: '4px',
-                animationDelay: '0.1s'
-              }}
-            >Nathan</h1>
-            <h1
-              className="hero-word"
-              style={{
-                fontFamily: 'var(--serif)', fontWeight: 400, fontStyle: 'italic',
-                fontSize: 'clamp(4rem, 10vw, 10rem)',
-                lineHeight: 0.95, letterSpacing: '-0.03em',
-                color: 'var(--accent)', display: 'block',
-                animationDelay: '0.22s'
-              }}
-            >Sfendji.</h1>
+            <h1 className="hero-word" style={{
+              fontFamily: 'var(--serif)', fontWeight: 900,
+              fontSize: 'clamp(4rem, 10vw, 10rem)',
+              lineHeight: 0.95, letterSpacing: '-0.03em',
+              display: 'block', marginBottom: '4px', animationDelay: '0.1s'
+            }}>Nathan</h1>
+            <h1 className="hero-word" style={{
+              fontFamily: 'var(--serif)', fontWeight: 400, fontStyle: 'italic',
+              fontSize: 'clamp(4rem, 10vw, 10rem)',
+              lineHeight: 0.95, letterSpacing: '-0.03em',
+              color: 'var(--accent)', display: 'block', animationDelay: '0.22s'
+            }}>Sfendji.</h1>
           </div>
 
-          {/* Two-column lower block */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', maxWidth: '860px' }}>
             <R delay={400}>
               <p style={{ fontSize: '1rem', color: 'var(--mid)', lineHeight: 1.9 }}>
@@ -123,7 +108,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div style={{ position: 'absolute', bottom: '36px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
           <p className="label" style={{ fontSize: '0.55rem' }}>Scroll</p>
           <div style={{ width: '1px', height: '36px', background: 'linear-gradient(to bottom, var(--accent), transparent)', animation: 'nudge 2s ease-in-out infinite' }} />
@@ -134,7 +118,7 @@ export default function Home() {
       <div style={{ background: 'var(--ink)', padding: '18px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
         <div ref={marqueeRef} style={{ display: 'flex', gap: '0', whiteSpace: 'nowrap' }}>
           {Array(4).fill(null).map((_, i) => (
-            <span key={i} style={{ fontFamily: 'var(--mono)', fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)', paddingRight: '0' }}>
+            <span key={i} style={{ fontFamily: 'var(--mono)', fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
               {['Nathan Sfendji', '·', 'AerEthos', '·', 'SETU Waterford', '·', 'Erasmus Budapest 2026', '·', 'Graphic Design & Web', '·', 'Next.js', '·'].map((w, j) => (
                 <span key={j} style={{ marginRight: '32px', color: w === '·' ? 'var(--accent)' : undefined }}>{w}</span>
               ))}
@@ -180,32 +164,22 @@ export default function Home() {
 
           <div className="g2">
             {[
-              {
-                num: '01', title: 'Weekly Tasks', sub: '50% of module',
-                desc: 'Domain pricing across six EU country codes, web hosting comparisons, the Edutus University logo rebuilt as an SVG vector, and a faculty banner created and modified in GIMP.',
-              },
-              {
-                num: '02', title: 'Final Project', sub: '20% of module',
-                desc: 'A complete business graphics system — business cards, brochure, advertisement, menu, and opening hours — unified under the AerEthos brand identity.',
-              },
-              {
-                num: '03', title: 'Graphic Review', sub: 'Part of weekly tasks',
-                desc: 'Real-world design pieces analysed — poster, advertisement, website, brochure. Problems identified, positives noted, improvements proposed.',
-              },
-              {
-                num: '04', title: 'About', sub: 'Who made this',
-                desc: 'A short introduction to me — Nathan Sfendji — and what I\'m up to right now.',
-              },
+              { href: '/tasks',   num: '01', title: 'Weekly Tasks',  sub: '50% of module',       desc: 'Domain pricing across six EU country codes, web hosting comparisons, the Edutus University logo rebuilt as an SVG vector, and a faculty banner created and modified in GIMP.' },
+              { href: '/project', num: '02', title: 'Final Project',  sub: '20% of module',       desc: 'A complete business graphics system — business cards, brochure, advertisement, menu, and opening hours — unified under the AerEthos brand identity.' },
+              { href: '/review',  num: '03', title: 'Graphic Review', sub: 'Part of weekly tasks', desc: 'Real-world design pieces analysed — poster, advertisement, website, brochure. Problems identified, positives noted, improvements proposed.' },
+              { href: '/about',   num: '04', title: 'About',          sub: 'Who made this',        desc: 'A short introduction to me — Nathan Sfendji — and what I\'m up to right now.' },
             ].map((s, i) => (
               <R key={i} delay={i * 80}>
-                <div className="card" style={{ height: '100%' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
-                    <p className="label" style={{ color: 'var(--mid)' }}>{s.sub}</p>
-                    <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '2.5rem', color: 'var(--faint)', lineHeight: 1 }}>{s.num}</span>
+                <Link href={s.href} style={{ display: 'block', textDecoration: 'none', color: 'inherit', height: '100%' }}>
+                  <div className="card" style={{ height: '100%' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '14px' }}>
+                      <p className="label" style={{ color: 'var(--mid)' }}>{s.sub}</p>
+                      <span style={{ fontFamily: 'var(--serif)', fontStyle: 'italic', fontSize: '2.5rem', color: 'var(--faint)', lineHeight: 1 }}>{s.num}</span>
+                    </div>
+                    <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.55rem', marginBottom: '10px' }}>{s.title}</h3>
+                    <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8 }}>{s.desc}</p>
                   </div>
-                  <h3 style={{ fontFamily: 'var(--serif)', fontSize: '1.55rem', marginBottom: '10px' }}>{s.title}</h3>
-                  <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8 }}>{s.desc}</p>
-                </div>
+                </Link>
               </R>
             ))}
           </div>
@@ -216,8 +190,7 @@ export default function Home() {
       <section style={{ padding: '0', background: 'var(--bg2)', borderTop: '1px solid var(--faint)', borderBottom: '1px solid var(--faint)' }}>
         <div className="wrap">
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', minHeight: '280px' }}>
-            {/* Left */}
-            <div style={{ padding: '64px 0', borderRight: '1px solid var(--faint)', paddingRight: '60px' }}>
+            <div style={{ padding: '64px 60px 64px 0', borderRight: '1px solid var(--faint)' }}>
               <p className="label" style={{ marginBottom: '12px' }}>Outside of class</p>
               <h2 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', lineHeight: 1.15, marginBottom: '20px' }}>
                 I run <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>AerEthos</em> —<br />
@@ -227,8 +200,7 @@ export default function Home() {
                 aerethos.com →
               </a>
             </div>
-            {/* Right — a few AerEthos facts */}
-            <div style={{ padding: '64px 0 64px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '0' }}>
+            <div style={{ padding: '64px 0 64px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               {[
                 { stat: '6+', detail: 'Schools served' },
                 { stat: 'EI', detail: 'Enterprise Ireland — New Frontiers' },
