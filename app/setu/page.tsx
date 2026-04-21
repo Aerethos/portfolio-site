@@ -5,12 +5,12 @@ import Link from 'next/link'
 const campuses = [
   {
     name: 'College Street Campus',
-    image: '/College Street Campus...d (1).jpg',
-    desc: 'The historic heart of SETU Waterford, home to business, humanities, and social sciences.',
+    image: '/College Street Campus, Waterford (1).jpg',
+    desc: 'The historic heart of SETU Waterford — home to business, humanities, and social sciences.',
   },
   {
     name: 'Cork Road Campus',
-    image: '/Cork Road Campus...d (1).jpg',
+    image: '/Cork Road Campus, Waterford (1).jpg',
     desc: 'Engineering, science, and technology — SETU\'s largest campus and main research hub.',
   },
   {
@@ -25,13 +25,13 @@ const campuses = [
   },
   {
     name: 'South Sports Campus',
-    image: '/South Sports Campus...w (1).jpg',
+    image: '/South Sports Campus, Carlow (1).jpg',
     desc: 'State-of-the-art sports and recreation facilities serving students across all campuses.',
   },
   {
-    name: 'Summerhill Road Campus',
-    image: '/Summerhill Road Campus...d (1).jpg',
-    desc: 'Nursing, health, and community studies in a dedicated campus environment.',
+    name: 'Kilkenny Road Campus',
+    image: '/Kilkenny Road Campus, Carlow (2).jpg',
+    desc: 'A modern campus in Carlow city — engineering, IT, and science at its core.',
   },
 ]
 
@@ -45,6 +45,14 @@ const facts = [
 export default function Setu() {
   return (
     <>
+      <style>{`
+        @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
+        .campus-card img { transition: transform 0.6s cubic-bezier(.16,1,.3,1); }
+        .campus-card:hover img { transform: scale(1.06); }
+        .campus-overlay { transition: opacity 0.3s ease; opacity: 0; }
+        .campus-card:hover .campus-overlay { opacity: 1; }
+      `}</style>
+
       {/* ── HERO ── */}
       <div style={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
         <Image
@@ -54,13 +62,11 @@ export default function Setu() {
           style={{ objectFit: 'cover', objectPosition: 'center' }}
           priority
         />
-        {/* Dark overlay */}
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(to bottom, rgba(10,10,10,0.35) 0%, rgba(10,10,10,0.55) 60%, rgba(10,10,10,0.85) 100%)'
+          background: 'linear-gradient(to bottom, rgba(10,10,10,0.3) 0%, rgba(10,10,10,0.5) 50%, rgba(10,10,10,0.88) 100%)'
         }} />
 
-        {/* Hero text */}
         <div style={{
           position: 'absolute', inset: 0,
           display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
@@ -71,9 +77,9 @@ export default function Setu() {
               <p style={{
                 fontFamily: 'var(--mono)', fontSize: '0.62rem',
                 letterSpacing: '0.2em', textTransform: 'uppercase',
-                color: 'rgba(255,255,255,0.55)', marginBottom: '16px'
+                color: 'rgba(255,255,255,0.5)', marginBottom: '16px'
               }}>
-                Waterford, Ireland · Est. 2022
+                Waterford & Carlow, Ireland · Est. 2022
               </p>
             </R>
             <R delay={80}>
@@ -91,13 +97,13 @@ export default function Setu() {
                 fontFamily: 'var(--serif)', fontWeight: 400, fontStyle: 'italic',
                 fontSize: 'clamp(3rem, 8vw, 8rem)',
                 lineHeight: 0.95, letterSpacing: '-0.03em',
-                color: 'var(--accent)', marginBottom: '36px'
+                color: 'var(--accent)', marginBottom: '40px'
               }}>
                 Technological University.
               </h1>
             </R>
             <R delay={220}>
-              <div style={{ display: 'flex', gap: '40px', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '48px', flexWrap: 'wrap' }}>
                 {facts.map(f => (
                   <div key={f.stat}>
                     <p style={{
@@ -107,7 +113,7 @@ export default function Setu() {
                     <p style={{
                       fontFamily: 'var(--mono)', fontSize: '0.6rem',
                       letterSpacing: '0.12em', textTransform: 'uppercase',
-                      color: 'rgba(255,255,255,0.45)'
+                      color: 'rgba(255,255,255,0.4)'
                     }}>{f.label}</p>
                   </div>
                 ))}
@@ -116,14 +122,12 @@ export default function Setu() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div style={{
           position: 'absolute', bottom: '32px', right: '48px',
           display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px'
         }}>
-          <style>{`@keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}`}</style>
-          <p style={{ fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.35)' }}>Scroll</p>
-          <div style={{ width: '1px', height: '36px', background: 'linear-gradient(to bottom, rgba(255,255,255,0.4), transparent)', animation: 'nudge 2s ease-in-out infinite' }} />
+          <p style={{ fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.16em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.3)' }}>Scroll</p>
+          <div style={{ width: '1px', height: '36px', background: 'linear-gradient(to bottom, rgba(255,255,255,0.35), transparent)', animation: 'nudge 2s ease-in-out infinite' }} />
         </div>
       </div>
 
@@ -138,15 +142,15 @@ export default function Setu() {
                 <h2 style={{
                   fontFamily: 'var(--serif)', fontWeight: 300, fontStyle: 'italic',
                   fontSize: 'clamp(2rem, 3.5vw, 3rem)',
-                  color: 'var(--paper)', lineHeight: 1.15, marginBottom: '24px'
+                  color: '#f4f0e8', lineHeight: 1.15, marginBottom: '24px'
                 }}>
                   A university built for the South East of Ireland.
                 </h2>
-                <p style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.9, fontSize: '0.95rem', marginBottom: '16px' }}>
-                  South East Technological University was established in 2022, bringing together IT Carlow and WIT Waterford into a single institution serving the entire south-east region of Ireland. It&apos;s one of the youngest technological universities in the country — and one of the most ambitious.
+                <p style={{ color: 'rgba(255,255,255,0.45)', lineHeight: 1.9, fontSize: '0.95rem', marginBottom: '16px' }}>
+                  South East Technological University was established in 2022, bringing together IT Carlow and WIT Waterford into a single institution serving the entire south-east region. It&apos;s one of the youngest technological universities in Ireland — and one of the most ambitious.
                 </p>
-                <p style={{ color: 'rgba(255,255,255,0.5)', lineHeight: 1.9, fontSize: '0.95rem' }}>
-                  With campuses across Waterford and Carlow, SETU offers programmes across engineering, business, health, arts, and technology — backed by strong industry links and growing research output.
+                <p style={{ color: 'rgba(255,255,255,0.45)', lineHeight: 1.9, fontSize: '0.95rem' }}>
+                  With campuses across Waterford, Carlow, and Wexford, SETU offers programmes spanning engineering, business, health, arts, and technology — backed by strong industry links and growing research output.
                 </p>
               </div>
             </R>
@@ -155,13 +159,12 @@ export default function Setu() {
                 <div style={{
                   position: 'absolute', top: '16px', right: '-16px',
                   width: '100%', height: '100%',
-                  border: '1px solid rgba(212,69,12,0.3)',
-                  zIndex: 0
+                  border: '1px solid rgba(212,69,12,0.3)', zIndex: 0
                 }} />
                 <div style={{ position: 'relative', zIndex: 1, aspectRatio: '4/3', overflow: 'hidden' }}>
                   <Image
-                    src="/Kilkenny Road Campus...(2).jpg"
-                    alt="SETU Campus"
+                    src="/College Street Campus, Waterford (2).jpg"
+                    alt="College Street Campus Waterford"
                     fill
                     style={{ objectFit: 'cover' }}
                   />
@@ -172,24 +175,24 @@ export default function Setu() {
         </div>
       </section>
 
-      {/* ── FULL WIDTH IMAGE BREAK ── */}
+      {/* ── FULL WIDTH IMAGE BREAK 1 ── */}
       <div style={{ position: 'relative', height: '60vh', overflow: 'hidden' }}>
         <Image
-          src="/Cork Road Campus...d (2).jpg"
+          src="/Cork Road Campus, Waterford (2).jpg"
           alt="Cork Road Campus"
           fill
           style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
         />
         <div style={{
           position: 'absolute', inset: 0,
-          background: 'linear-gradient(to right, rgba(10,10,10,0.7) 0%, rgba(10,10,10,0.1) 60%)'
+          background: 'linear-gradient(to right, rgba(10,10,10,0.75) 0%, rgba(10,10,10,0.1) 65%)'
         }} />
         <div style={{
           position: 'absolute', inset: 0, display: 'flex',
           alignItems: 'center', padding: '0 48px'
         }}>
           <div style={{ maxWidth: '1140px', margin: '0 auto', width: '100%' }}>
-            <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)', marginBottom: '12px' }}>Cork Road Campus</p>
+            <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '12px' }}>Cork Road Campus · Waterford</p>
             <h2 style={{
               fontFamily: 'var(--serif)', fontStyle: 'italic', fontWeight: 300,
               fontSize: 'clamp(2rem, 4vw, 3.5rem)',
@@ -208,74 +211,57 @@ export default function Setu() {
             <p className="label" style={{ marginBottom: '12px' }}>The Campuses</p>
             <div style={{ width: '32px', height: '2px', background: 'var(--accent)', marginBottom: '20px' }} />
             <h2 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(2rem, 3.5vw, 3rem)', marginBottom: '16px' }}>
-              Six sites across<br />
-              <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>Waterford city.</em>
+              Campuses across<br />
+              <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>the South East.</em>
             </h2>
             <p style={{ color: 'var(--mid)', maxWidth: '480px', lineHeight: 1.85, marginBottom: '56px', fontSize: '0.92rem' }}>
-              Each campus has its own character and specialisation — together they form one of the most geographically distributed universities in Ireland.
+              Each campus has its own character and specialisation — together forming one of the most distributed universities in Ireland.
             </p>
           </R>
+        </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px' }}>
-            {campuses.map((c, i) => (
-              <R key={i} delay={i * 60}>
-                <div style={{ position: 'relative', overflow: 'hidden', aspectRatio: '4/3', cursor: 'default' }}
-                  className="campus-card">
-                  <style>{`
-                    .campus-card img { transition: transform 0.6s cubic-bezier(.16,1,.3,1); }
-                    .campus-card:hover img { transform: scale(1.06); }
-                    .campus-card .campus-overlay { transition: opacity 0.3s ease; opacity: 0; }
-                    .campus-card:hover .campus-overlay { opacity: 1; }
-                  `}</style>
-                  <Image
-                    src={c.image}
-                    alt={c.name}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                  />
-                  {/* Always-visible bottom gradient + name */}
-                  <div style={{
-                    position: 'absolute', inset: 0,
-                    background: 'linear-gradient(to top, rgba(10,10,10,0.75) 0%, transparent 50%)',
-                  }} />
-                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 24px' }}>
-                    <p style={{
-                      fontFamily: 'var(--serif)', fontSize: '1.05rem', fontWeight: 700,
-                      color: '#fff', marginBottom: '0'
-                    }}>{c.name}</p>
-                  </div>
-                  {/* Hover overlay */}
-                  <div className="campus-overlay" style={{
-                    position: 'absolute', inset: 0,
-                    background: 'rgba(212,69,12,0.85)',
-                    display: 'flex', flexDirection: 'column',
-                    justifyContent: 'center', padding: '28px'
-                  }}>
-                    <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: '#fff', marginBottom: '10px' }}>{c.name}</p>
-                    <p style={{ fontFamily: 'var(--sans)', fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)', lineHeight: 1.75 }}>{c.desc}</p>
-                  </div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '2px' }}>
+          {campuses.map((c, i) => (
+            <R key={i} delay={i * 60}>
+              <div className="campus-card" style={{ position: 'relative', overflow: 'hidden', aspectRatio: '4/3' }}>
+                <Image src={c.image} alt={c.name} fill style={{ objectFit: 'cover' }} />
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  background: 'linear-gradient(to top, rgba(10,10,10,0.75) 0%, transparent 55%)',
+                }} />
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '20px 24px' }}>
+                  <p style={{ fontFamily: 'var(--serif)', fontSize: '1.05rem', fontWeight: 700, color: '#fff' }}>{c.name}</p>
                 </div>
-              </R>
-            ))}
-          </div>
+                <div className="campus-overlay" style={{
+                  position: 'absolute', inset: 0,
+                  background: 'rgba(212,69,12,0.88)',
+                  display: 'flex', flexDirection: 'column',
+                  justifyContent: 'center', padding: '28px'
+                }}>
+                  <p style={{ fontFamily: 'var(--serif)', fontSize: '1.1rem', fontWeight: 700, color: '#fff', marginBottom: '10px' }}>{c.name}</p>
+                  <p style={{ fontFamily: 'var(--sans)', fontSize: '0.82rem', color: 'rgba(255,255,255,0.88)', lineHeight: 1.75 }}>{c.desc}</p>
+                </div>
+              </div>
+            </R>
+          ))}
         </div>
       </section>
 
-      {/* ── SECOND FULL WIDTH BREAK ── */}
+      {/* ── FULL WIDTH IMAGE BREAK 2 ── */}
       <div style={{ position: 'relative', height: '50vh', overflow: 'hidden' }}>
         <Image
-          src="/West Campus, Waterford (2).jpg"
-          alt="West Campus"
+          src="/West Campus, Waterford (4).jpg"
+          alt="West Campus Waterford"
           fill
-          style={{ objectFit: 'cover', objectPosition: 'center 30%' }}
+          style={{ objectFit: 'cover', objectPosition: 'center 40%' }}
         />
-        <div style={{ position: 'absolute', inset: 0, background: 'rgba(10,10,10,0.45)' }} />
+        <div style={{ position: 'absolute', inset: 0, background: 'rgba(10,10,10,0.5)' }} />
         <div style={{
           position: 'absolute', inset: 0, display: 'flex',
           alignItems: 'center', justifyContent: 'center', textAlign: 'center'
         }}>
           <div>
-            <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.45)', marginBottom: '16px' }}>
+            <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.4)', marginBottom: '16px' }}>
               West Campus · Waterford
             </p>
             <h2 style={{
@@ -309,7 +295,7 @@ export default function Setu() {
         </div>
       </section>
 
-      {/* ── GALLERY STRIP — remaining images ── */}
+      {/* ── GALLERY STRIP ── */}
       <section style={{ paddingBottom: '0' }}>
         <div className="wrap">
           <R>
@@ -317,20 +303,38 @@ export default function Setu() {
             <div style={{ width: '32px', height: '2px', background: 'var(--accent)', marginBottom: '48px' }} />
           </R>
         </div>
-        {/* Full bleed horizontal scroll gallery */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '2px' }}>
           {[
             '/Granary Campus, Waterford (2).jpg',
-            '/Hill Street Campus...ford.jpg',
-            '/South Sports Campus...(2).jpg',
-            '/Kilkenny Road Campus...(3).jpg',
-            '/Summerhill Road Campus...d (2).jpg',
+            '/Hill Street Campus, Wexford.jpg',
+            '/South Sports Campus, Carlow (2).jpg',
+            '/Kilkenny Road Campus, Carlow (3).jpg',
+            '/Summerhill Road Campus, Wexford (1).jpg',
           ].map((src, i) => (
             <R key={i} delay={i * 40}>
               <div style={{ position: 'relative', aspectRatio: '1/1', overflow: 'hidden' }}>
-                <Image src={src} alt="SETU campus" fill style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }} />
+                <Image
+                  src={src}
+                  alt="SETU campus"
+                  fill
+                  style={{ objectFit: 'cover', transition: 'transform 0.5s ease' }}
+                />
               </div>
             </R>
+          ))}
+        </div>
+      </section>
+
+      {/* ── WEXFORD ROW ── */}
+      <section style={{ paddingTop: '2px', paddingBottom: '0' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2px' }}>
+          {[
+            '/Summerhill Road Campus, Wexford (2).jpg',
+            '/Applied Technology Campus, Waterford.jpg',
+          ].map((src, i) => (
+            <div key={i} style={{ position: 'relative', aspectRatio: '16/7', overflow: 'hidden' }}>
+              <Image src={src} alt="SETU campus" fill style={{ objectFit: 'cover' }} />
+            </div>
           ))}
         </div>
       </section>
@@ -342,8 +346,8 @@ export default function Setu() {
             <R>
               <div style={{ position: 'relative', aspectRatio: '3/2', overflow: 'hidden' }}>
                 <Image
-                  src="/College Street Campus...d (2).jpg"
-                  alt="College Street Campus"
+                  src="/Cork Road Campus, Waterford (3).jpg"
+                  alt="SETU Cork Road Campus"
                   fill
                   style={{ objectFit: 'cover' }}
                 />
@@ -358,10 +362,10 @@ export default function Setu() {
                   <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>and build.</em>
                 </h2>
                 <p style={{ color: 'var(--mid)', lineHeight: 1.9, fontSize: '0.95rem', marginBottom: '16px' }}>
-                  I&apos;m a second-year International Business student at SETU Waterford, based on the College Street campus. Alongside my degree I founded AerEthos — backed by Enterprise Ireland&apos;s New Frontiers Programme, which is run through SETU.
+                  I&apos;m a second-year International Business student at SETU Waterford, based on the College Street campus. Alongside my degree I founded AerEthos — backed by Enterprise Ireland&apos;s New Frontiers Programme, which runs through SETU.
                 </p>
                 <p style={{ color: 'var(--mid)', lineHeight: 1.9, fontSize: '0.95rem', marginBottom: '32px' }}>
-                  The university has been the platform for a lot of what I&apos;ve built — from winning the Waterford Student Enterprise Award to representing SETU at international events in Europe.
+                  The university has been the platform for a lot of what I&apos;ve built — from winning the Waterford Student Enterprise Award to representing SETU at international events across Europe.
                 </p>
                 <Link href="/about" className="btn btn-outline">About me →</Link>
               </div>
