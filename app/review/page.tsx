@@ -24,7 +24,7 @@ const reviews = [
   {
     type: 'Advertisement',
     name: 'IKEA — "Everyday Fabulous" print series',
-    url: 'https://www.ikea.com/gb/en/',
+    url: 'https://www.jasonashlock.com/IKEA-Everyday-Fabulous',
     problems: [
       'Too many products in frame — the hero item gets lost, the eye doesn\'t know where to settle',
       'Price callouts use a competing visual language to the lifestyle photography — they feel grafted on',
