@@ -5,6 +5,7 @@ const reviews = [
   {
     type: 'Poster',
     name: 'Apple — "Think Different" (1997)',
+    url: 'https://en.wikipedia.org/wiki/Think_different',
     problems: [
       'Hierarchy is entirely reliant on a single font — no typographic contrast beyond size',
       'The composition is static; there\'s no visual movement or tension to hold the eye',
@@ -23,6 +24,7 @@ const reviews = [
   {
     type: 'Advertisement',
     name: 'IKEA — "Everyday Fabulous" print series',
+    url: 'https://www.ikea.com/gb/en/campaigns/everyday-fabulous/',
     problems: [
       'Too many products in frame — the hero item gets lost, the eye doesn\'t know where to settle',
       'Price callouts use a competing visual language to the lifestyle photography — they feel grafted on',
@@ -41,6 +43,7 @@ const reviews = [
   {
     type: 'Website',
     name: 'Stripe.com',
+    url: 'https://stripe.com',
     problems: [
       'Animation-heavy home page has no prefers-reduced-motion support — an accessibility gap for a company that should know better',
       'Two primary CTAs ("Start now" + "Contact sales") creates decision paralysis for new visitors',
@@ -59,6 +62,7 @@ const reviews = [
   {
     type: 'Brochure',
     name: 'Airbnb Host Handbook',
+    url: 'https://www.airbnb.com/resources/hosting-homes/a/the-airbnb-host-handbook-184',
     problems: [
       'Too many full-bleed section breaks — the rhythm becomes choppy rather than building momentum',
       'Icon style is inconsistent across spreads: some flat, some outlined, one set with drop shadows',
@@ -93,10 +97,58 @@ export default function Review() {
         <div className="wrap">
           {reviews.map((r, i) => (
             <R key={i} delay={i * 60}>
-              <div style={{ marginBottom: '48px', borderBottom: i < reviews.length - 1 ? '1px solid var(--faint)' : undefined, paddingBottom: i < reviews.length - 1 ? '48px' : 0 }}>
+              <div style={{
+                marginBottom: '48px',
+                borderBottom: i < reviews.length - 1 ? '1px solid var(--faint)' : undefined,
+                paddingBottom: i < reviews.length - 1 ? '48px' : 0
+              }}>
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap' }}>
-                  <span className="tag">{r.type}</span>
-                  <h2 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(1.4rem, 2.5vw, 2rem)', flex: 1, minWidth: '200px' }}>{r.name}</h2>
+
+                  {/* Clickable type tag */}
+                  
+                    href={r.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      fontFamily: 'var(--mono)',
+                      fontSize: '0.6rem',
+                      letterSpacing: '0.12em',
+                      textTransform: 'uppercase',
+                      padding: '6px 12px',
+                      border: '1px solid var(--faint)',
+                      color: 'var(--mid)',
+                      textDecoration: 'none',
+                      transition: 'border-color 0.2s, color 0.2s, background 0.2s',
+                      whiteSpace: 'nowrap',
+                      cursor: 'none',
+                    }}
+                    onMouseEnter={e => {
+                      const el = e.currentTarget
+                      el.style.borderColor = 'var(--accent)'
+                      el.style.color = 'var(--accent)'
+                      el.style.background = 'rgba(212,69,12,0.05)'
+                    }}
+                    onMouseLeave={e => {
+                      const el = e.currentTarget
+                      el.style.borderColor = 'var(--faint)'
+                      el.style.color = 'var(--mid)'
+                      el.style.background = 'transparent'
+                    }}
+                  >
+                    {r.type}
+                    <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M1 7L7 1M7 1H2.5M7 1V5.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
+
+                  <h2 style={{
+                    fontFamily: 'var(--serif)',
+                    fontSize: 'clamp(1.4rem, 2.5vw, 2rem)',
+                    flex: 1, minWidth: '200px'
+                  }}>{r.name}</h2>
                 </div>
 
                 <div className="g3" style={{ gap: '28px' }}>
