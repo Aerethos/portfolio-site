@@ -174,7 +174,7 @@ export default function Home() {
               What&apos;s on this site
             </h2>
             <p style={{ color: 'var(--mid)', maxWidth: '520px', lineHeight: 1.85, marginBottom: '56px' }}>
-              Four sections covering everything required for the Graphic Design &amp; Web module — done properly, not just ticked off.
+              Four sections covering everything required for the Graphic Design &amp; Web module.
             </p>
           </R>
 
