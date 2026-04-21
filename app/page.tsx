@@ -153,16 +153,6 @@ export default function Home() {
         if (t > 1.4) { phase = 2; t = 0 }
       }
 
-      // Phase 2: plane zooms toward camera
-      if (phase === 2) {
-        t += 0.016
-        zoomT = Math.min(1, t * 0.7)
-        planeSize = 14 + easeIn(zoomT) * 600
-        mapAlpha = Math.max(0, 1 - zoomT * 2)
-        if (zoomT > 0.85) flashAlpha = Math.min(1, (zoomT - 0.85) * 8)
-        if (zoomT >= 1) { phase = 3; t = 0 }
-      }
-
       // Phase 3: flash + reveal
       if (phase === 3) {
         t += 0.025
