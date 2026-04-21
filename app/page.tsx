@@ -1,12 +1,154 @@
 'use client'
 import R from '@/components/R'
 import Link from 'next/link'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 export default function Home() {
   const marqueeRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const gridRef = useRef<HTMLCanvasElement>(null)
+  const [introComplete, setIntroComplete] = useState(false)
+  const [introVisible, setIntroVisible] = useState(true)
 
+  // Grid intro animation
+  useEffect(() => {
+    const canvas = gridRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+
+    const W = canvas.width
+    const H = canvas.height
+    const cols = 12
+    const rows = 8
+    const cellW = W / cols
+    const cellH = H / rows
+
+    // Each line has: start point, end point, progress 0-1, delay
+    const lines: { x1: number; y1: number; x2: number; y2: number; progress: number; delay: number; speed: number }[] = []
+
+    // Vertical lines
+    for (let i = 0; i <= cols; i++) {
+      lines.push({
+        x1: i * cellW, y1: 0,
+        x2: i * cellW, y2: H,
+        progress: 0,
+        delay: i * 0.04,
+        speed: 0.028 + Math.random() * 0.02
+      })
+    }
+    // Horizontal lines
+    for (let i = 0; i <= rows; i++) {
+      lines.push({
+        x1: 0, y1: i * cellH,
+        x2: W, y2: i * cellH,
+        progress: 0,
+        delay: 0.3 + i * 0.06,
+        speed: 0.022 + Math.random() * 0.018
+      })
+    }
+
+    // Diagonal accent lines
+    lines.push({ x1: 0, y1: 0, x2: W * 0.4, y2: H, progress: 0, delay: 0.6, speed: 0.018 })
+    lines.push({ x1: W, y1: 0, x2: W * 0.6, y2: H, progress: 0, delay: 0.7, speed: 0.018 })
+    lines.push({ x1: W * 0.3, y1: 0, x2: W * 0.7, y2: H * 0.6, progress: 0, delay: 0.8, speed: 0.022 })
+
+    let t = 0
+    let phase: 'draw' | 'hold' | 'fade' = 'draw'
+    let holdT = 0
+    let globalAlpha = 1
+    let animId: number
+
+    const tick = () => {
+      ctx.clearRect(0, 0, W, H)
+
+      if (phase === 'draw') {
+        t += 0.016
+        let allDone = true
+        lines.forEach(l => {
+          if (t > l.delay) {
+            l.progress = Math.min(1, l.progress + l.speed)
+          }
+          if (l.progress < 1) allDone = false
+        })
+        if (allDone) { phase = 'hold'; holdT = 0 }
+      }
+
+      if (phase === 'hold') {
+        holdT += 0.016
+        if (holdT > 0.6) phase = 'fade'
+      }
+
+      if (phase === 'fade') {
+        globalAlpha = Math.max(0, globalAlpha - 0.022)
+        if (globalAlpha <= 0) {
+          setIntroComplete(true)
+          setTimeout(() => setIntroVisible(false), 400)
+          cancelAnimationFrame(animId)
+          return
+        }
+      }
+
+      // Draw background
+      ctx.fillStyle = `rgba(26, 24, 20, ${globalAlpha})`
+      ctx.fillRect(0, 0, W, H)
+
+      // Draw lines
+      lines.forEach(l => {
+        if (l.progress <= 0) return
+        const ex = l.x1 + (l.x2 - l.x1) * l.progress
+        const ey = l.y1 + (l.y2 - l.y1) * l.progress
+
+        ctx.beginPath()
+        ctx.moveTo(l.x1, l.y1)
+        ctx.lineTo(ex, ey)
+        ctx.strokeStyle = `rgba(212, 69, 12, ${0.35 * globalAlpha})`
+        ctx.lineWidth = 0.5
+        ctx.stroke()
+
+        // Bright leading dot
+        if (l.progress < 1) {
+          ctx.beginPath()
+          ctx.arc(ex, ey, 1.5, 0, Math.PI * 2)
+          ctx.fillStyle = `rgba(212, 69, 12, ${0.9 * globalAlpha})`
+          ctx.fill()
+        }
+      })
+
+      // Draw intersection dots at full grid intersections
+      if (phase === 'hold' || phase === 'fade') {
+        for (let i = 0; i <= cols; i++) {
+          for (let j = 0; j <= rows; j++) {
+            ctx.beginPath()
+            ctx.arc(i * cellW, j * cellH, 2, 0, Math.PI * 2)
+            ctx.fillStyle = `rgba(212, 69, 12, ${0.5 * globalAlpha})`
+            ctx.fill()
+          }
+        }
+      }
+
+      // Name reveal text during hold
+      if (phase === 'hold' || phase === 'fade') {
+        const textAlpha = phase === 'hold'
+          ? Math.min(1, holdT * 4)
+          : globalAlpha
+        ctx.font = `900 ${Math.min(W * 0.13, 130)}px 'Playfair Display', Georgia, serif`
+        ctx.fillStyle = `rgba(244, 240, 232, ${textAlpha * 0.08})`
+        ctx.textAlign = 'center'
+        ctx.fillText('NATHAN SFENDJI', W / 2, H / 2 + 40)
+      }
+
+      animId = requestAnimationFrame(tick)
+    }
+
+    animId = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(animId)
+  }, [])
+
+  // Marquee
   useEffect(() => {
     const el = marqueeRef.current
     if (!el) return
@@ -20,6 +162,7 @@ export default function Home() {
     requestAnimationFrame(frame)
   }, [])
 
+  // Country map canvas
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -37,7 +180,6 @@ export default function Home() {
     const W = () => canvas.offsetWidth
     const H = () => canvas.offsetHeight
 
-    // Ireland SVG path points (simplified outline, normalised 0-1)
     const irelandPoints = [
       [0.45,0.05],[0.55,0.04],[0.65,0.08],[0.72,0.14],[0.78,0.22],[0.80,0.30],
       [0.75,0.38],[0.82,0.44],[0.85,0.52],[0.80,0.60],[0.72,0.66],[0.78,0.72],
@@ -45,8 +187,6 @@ export default function Home() {
       [0.20,0.76],[0.15,0.66],[0.12,0.56],[0.15,0.46],[0.10,0.38],[0.12,0.28],
       [0.20,0.20],[0.28,0.13],[0.36,0.08],[0.45,0.05]
     ]
-
-    // Hungary SVG path points (simplified outline, normalised 0-1)
     const hungaryPoints = [
       [0.08,0.32],[0.18,0.22],[0.28,0.16],[0.40,0.12],[0.52,0.08],[0.64,0.10],
       [0.74,0.06],[0.84,0.10],[0.92,0.18],[0.96,0.28],[0.94,0.38],[0.98,0.46],
@@ -55,28 +195,18 @@ export default function Home() {
       [0.06,0.40],[0.08,0.32]
     ]
 
-    const drawCountry = (
-      points: number[][],
-      bx: number, by: number, bw: number, bh: number,
-      fillColor: string, strokeColor: string
-    ) => {
+    const drawCountry = (points: number[][], bx: number, by: number, bw: number, bh: number, fill: string, stroke: string) => {
       ctx.beginPath()
       points.forEach(([nx, ny], i) => {
-        const px = bx + nx * bw
-        const py = by + ny * bh
+        const px = bx + nx * bw, py = by + ny * bh
         i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)
       })
       ctx.closePath()
-      ctx.fillStyle = fillColor
-      ctx.fill()
-      ctx.strokeStyle = strokeColor
-      ctx.lineWidth = 1.5
-      ctx.stroke()
+      ctx.fillStyle = fill; ctx.fill()
+      ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke()
     }
 
-    const getCentroid = (
-      points: number[][], bx: number, by: number, bw: number, bh: number
-    ) => {
+    const getCentroid = (points: number[][], bx: number, by: number, bw: number, bh: number) => {
       const sx = points.reduce((a, p) => a + p[0], 0) / points.length
       const sy = points.reduce((a, p) => a + p[1], 0) / points.length
       return { x: bx + sx * bw, y: by + sy * bh }
@@ -88,58 +218,25 @@ export default function Home() {
 
     const draw = () => {
       ctx.clearRect(0, 0, W(), H())
-
       const w = W(), h = H()
+      const iw = w * 0.18, ih = h * 0.55, ix = w * 0.08, iy = h * 0.22
+      const hw = w * 0.22, hh = h * 0.38, hx = w * 0.70, hy = h * 0.30
 
-      // Ireland — left side
-      const iw = w * 0.18, ih = h * 0.55
-      const ix = w * 0.08, iy = h * 0.22
+      drawCountry(irelandPoints, ix, iy, iw, ih, 'rgba(212,69,12,0.07)', 'rgba(212,69,12,0.25)')
+      drawCountry(hungaryPoints, hx, hy, hw, hh, 'rgba(212,69,12,0.12)', 'rgba(212,69,12,0.35)')
 
-      // Hungary — right side
-      const hw = w * 0.22, hh = h * 0.38
-      const hx = w * 0.70, hy = h * 0.30
-
-      // Draw Ireland
-      drawCountry(
-        irelandPoints, ix, iy, iw, ih,
-        'rgba(212,69,12,0.07)',
-        'rgba(212,69,12,0.25)'
-      )
-
-      // Draw Hungary
-      drawCountry(
-        hungaryPoints, hx, hy, hw, hh,
-        'rgba(212,69,12,0.12)',
-        'rgba(212,69,12,0.35)'
-      )
-
-      // Centroids
       const dublin = getCentroid(irelandPoints, ix, iy, iw, ih)
       const budapest = getCentroid(hungaryPoints, hx, hy, hw, hh)
+      dublin.x += iw * 0.05; dublin.y += ih * 0.18
+      budapest.x += hw * 0.05; budapest.y -= hh * 0.05
 
-      // Slight nudge to feel more like Dublin / Budapest city positions
-      dublin.x += iw * 0.05
-      dublin.y += ih * 0.18
-      budapest.x += hw * 0.05
-      budapest.y -= hh * 0.05
+      const cp = { x: (dublin.x + budapest.x) / 2, y: Math.min(dublin.y, budapest.y) - h * 0.28 }
 
-      // Arc control point — curves upward
-      const cp = {
-        x: (dublin.x + budapest.x) / 2,
-        y: Math.min(dublin.y, budapest.y) - h * 0.28
-      }
-
-      // Dashed flight path
       ctx.beginPath()
       ctx.moveTo(dublin.x, dublin.y)
       ctx.quadraticCurveTo(cp.x, cp.y, budapest.x, budapest.y)
-      ctx.setLineDash([5, 8])
-      ctx.strokeStyle = 'rgba(212,69,12,0.2)'
-      ctx.lineWidth = 1.5
-      ctx.stroke()
-      ctx.setLineDash([])
+      ctx.setLineDash([5, 8]); ctx.strokeStyle = 'rgba(212,69,12,0.2)'; ctx.lineWidth = 1.5; ctx.stroke(); ctx.setLineDash([])
 
-      // Plane position along quadratic bezier
       const bt = planeT
       const px = (1-bt)*(1-bt)*dublin.x + 2*(1-bt)*bt*cp.x + bt*bt*budapest.x
       const py = (1-bt)*(1-bt)*dublin.y + 2*(1-bt)*bt*cp.y + bt*bt*budapest.y
@@ -148,66 +245,36 @@ export default function Home() {
       const py2 = (1-bt2)*(1-bt2)*dublin.y + 2*(1-bt2)*bt2*cp.y + bt2*bt2*budapest.y
       const angle = Math.atan2(py2 - py, px2 - px)
 
-      // Trail
       trailPoints.push({ x: px, y: py })
       if (trailPoints.length > 50) trailPoints.shift()
       trailPoints.forEach((pt, idx) => {
-        ctx.beginPath()
-        ctx.arc(pt.x, pt.y, 1.2, 0, Math.PI * 2)
-        ctx.fillStyle = `rgba(212,69,12,${(idx / trailPoints.length) * 0.35})`
-        ctx.fill()
+        ctx.beginPath(); ctx.arc(pt.x, pt.y, 1.2, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(212,69,12,${(idx / trailPoints.length) * 0.35})`; ctx.fill()
       })
 
-      // Plane
-      ctx.save()
-      ctx.translate(px, py)
-      ctx.rotate(angle)
-      ctx.beginPath()
-      ctx.moveTo(10, 0)
-      ctx.lineTo(-6, 5)
-      ctx.lineTo(-4, 0)
-      ctx.lineTo(-6, -5)
-      ctx.closePath()
-      ctx.fillStyle = 'rgba(212,69,12,0.9)'
-      ctx.fill()
-      ctx.restore()
+      ctx.save(); ctx.translate(px, py); ctx.rotate(angle)
+      ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(-6, 5); ctx.lineTo(-4, 0); ctx.lineTo(-6, -5); ctx.closePath()
+      ctx.fillStyle = 'rgba(212,69,12,0.9)'; ctx.fill(); ctx.restore()
 
-      // Dublin dot + label
-      ctx.beginPath()
-      ctx.arc(dublin.x, dublin.y, 4, 0, Math.PI * 2)
-      ctx.fillStyle = 'rgba(212,69,12,0.5)'
-      ctx.fill()
-      ctx.font = `500 10px monospace`
-      ctx.fillStyle = 'rgba(212,69,12,0.55)'
+      ctx.beginPath(); ctx.arc(dublin.x, dublin.y, 4, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(212,69,12,0.5)'; ctx.fill()
+      ctx.font = '500 10px monospace'; ctx.fillStyle = 'rgba(212,69,12,0.55)'
       ctx.fillText('Dublin, Ireland', dublin.x - 8, dublin.y + 18)
 
-      // Budapest dot + pulse + label
       const pulse = 5 + Math.sin(Date.now() / 500) * 2.5
-      ctx.beginPath()
-      ctx.arc(budapest.x, budapest.y, pulse, 0, Math.PI * 2)
-      ctx.strokeStyle = 'rgba(212,69,12,0.25)'
-      ctx.lineWidth = 1
-      ctx.stroke()
-      ctx.beginPath()
-      ctx.arc(budapest.x, budapest.y, 4, 0, Math.PI * 2)
-      ctx.fillStyle = 'rgba(212,69,12,0.85)'
-      ctx.fill()
-      ctx.font = `500 10px monospace`
-      ctx.fillStyle = 'rgba(212,69,12,0.8)'
+      ctx.beginPath(); ctx.arc(budapest.x, budapest.y, pulse, 0, Math.PI * 2)
+      ctx.strokeStyle = 'rgba(212,69,12,0.25)'; ctx.lineWidth = 1; ctx.stroke()
+      ctx.beginPath(); ctx.arc(budapest.x, budapest.y, 4, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(212,69,12,0.85)'; ctx.fill()
+      ctx.font = '500 10px monospace'; ctx.fillStyle = 'rgba(212,69,12,0.8)'
       ctx.fillText('Budapest ✦', budapest.x - 8, budapest.y + 18)
 
-      // Advance plane
       planeT += 0.003
       if (planeT > 1) { planeT = 0; trailPoints = [] }
-
       animId = requestAnimationFrame(draw)
     }
     draw()
-
-    return () => {
-      cancelAnimationFrame(animId)
-      window.removeEventListener('resize', resize)
-    }
+    return () => { cancelAnimationFrame(animId); window.removeEventListener('resize', resize) }
   }, [])
 
   return (
@@ -216,7 +283,27 @@ export default function Home() {
         @keyframes nudge{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
         @keyframes fadeSlideUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
         .hero-word { display:inline-block; animation: fadeSlideUp 0.9s cubic-bezier(.16,1,.3,1) both; }
+        .intro-canvas {
+          transition: opacity 0.4s ease;
+        }
+        .intro-canvas.done {
+          opacity: 0;
+          pointer-events: none;
+        }
       `}</style>
+
+      {/* ── GRID INTRO OVERLAY ── */}
+      {introVisible && (
+        <canvas
+          ref={gridRef}
+          className={`intro-canvas${introComplete ? ' done' : ''}`}
+          style={{
+            position: 'fixed', inset: 0, zIndex: 1000,
+            width: '100vw', height: '100vh',
+            pointerEvents: introComplete ? 'none' : 'all',
+          }}
+        />
+      )}
 
       {/* ── HERO ── */}
       <section style={{
@@ -225,51 +312,21 @@ export default function Home() {
         borderBottom: '1px solid var(--faint)', overflow: 'hidden',
         background: 'var(--bg)'
       }}>
+        <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 1 }} />
 
-        <canvas ref={canvasRef} style={{
-          position: 'absolute', inset: 0,
-          width: '100%', height: '100%',
-          pointerEvents: 'none', zIndex: 1
-        }} />
-
-        <div style={{
-          position: 'absolute', top: '32px', right: '48px',
-          fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.14em',
-          textTransform: 'uppercase', color: 'var(--faint)',
-          display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px',
-          zIndex: 3
-        }}>
+        <div style={{ position: 'absolute', top: '32px', right: '48px', fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--faint)', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '4px', zIndex: 3 }}>
           <span>Graphic Design & Web</span>
           <span style={{ color: 'var(--accent)' }}>Erasmus BIP · Budapest 2026</span>
         </div>
 
         <div style={{ position: 'absolute', top: 0, left: '48px', width: '1px', height: '100%', background: 'linear-gradient(to bottom, transparent 0%, var(--faint) 25%, var(--faint) 75%, transparent 100%)', zIndex: 2 }} />
-        <div style={{
-          position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)',
-          fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.18em',
-          textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap', zIndex: 2
-        }}>Waterford · Ireland</div>
-
-        <div style={{
-          position: 'absolute', top: '50%', left: 0, right: 0,
-          height: '1px', background: 'var(--faint)', opacity: 0.3,
-          pointerEvents: 'none', zIndex: 2
-        }} />
+        <div style={{ position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)', fontFamily: 'var(--mono)', fontSize: '0.55rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap', zIndex: 2 }}>Waterford · Ireland</div>
+        <div style={{ position: 'absolute', top: '50%', left: 0, right: 0, height: '1px', background: 'var(--faint)', opacity: 0.3, pointerEvents: 'none', zIndex: 2 }} />
 
         <div className="wrap" style={{ position: 'relative', zIndex: 3, paddingTop: '0' }}>
           <div style={{ marginBottom: '40px' }}>
-            <h1 className="hero-word" style={{
-              fontFamily: 'var(--serif)', fontWeight: 900,
-              fontSize: 'clamp(4rem, 10vw, 10rem)',
-              lineHeight: 0.95, letterSpacing: '-0.03em',
-              display: 'block', marginBottom: '4px', animationDelay: '0.1s'
-            }}>Nathan</h1>
-            <h1 className="hero-word" style={{
-              fontFamily: 'var(--serif)', fontWeight: 400, fontStyle: 'italic',
-              fontSize: 'clamp(4rem, 10vw, 10rem)',
-              lineHeight: 0.95, letterSpacing: '-0.03em',
-              color: 'var(--accent)', display: 'block', animationDelay: '0.22s'
-            }}>Sfendji.</h1>
+            <h1 className="hero-word" style={{ fontFamily: 'var(--serif)', fontWeight: 900, fontSize: 'clamp(4rem, 10vw, 10rem)', lineHeight: 0.95, letterSpacing: '-0.03em', display: 'block', marginBottom: '4px', animationDelay: '0.1s' }}>Nathan</h1>
+            <h1 className="hero-word" style={{ fontFamily: 'var(--serif)', fontWeight: 400, fontStyle: 'italic', fontSize: 'clamp(4rem, 10vw, 10rem)', lineHeight: 0.95, letterSpacing: '-0.03em', color: 'var(--accent)', display: 'block', animationDelay: '0.22s' }}>Sfendji.</h1>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', maxWidth: '860px' }}>
@@ -320,8 +377,8 @@ export default function Home() {
         <div className="wrap">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
             {[
-              { num: '20',  label: 'Years old' },
-              { num: 'IE',  label: 'Waterford, Ireland' },
+              { num: '20', label: 'Years old' },
+              { num: 'IE', label: 'Waterford, Ireland' },
               { num: 'BUD', label: 'Erasmus · Budapest' },
               { num: '\'23', label: 'AerEthos founded' },
             ].map((f, i) => (
@@ -352,7 +409,7 @@ export default function Home() {
               { href: '/tasks',   num: '01', title: 'Weekly Tasks',  sub: '50% of module',        desc: 'Domain pricing across six EU country codes, web hosting comparisons, the Edutus University logo rebuilt as an SVG vector, and a faculty banner created and modified in GIMP.' },
               { href: '/project', num: '02', title: 'Final Project',  sub: '20% of module',        desc: 'A complete business graphics system — business cards, brochure, advertisement, menu, and opening hours — unified under the AerEthos brand identity.' },
               { href: '/review',  num: '03', title: 'Graphic Review', sub: 'Part of weekly tasks', desc: 'Real-world design pieces analysed — poster, advertisement, website, brochure. Problems identified, positives noted, improvements proposed.' },
-              { href: '/about',   num: '04', title: 'About',          sub: 'Who made this',         desc: 'A short introduction to me — Nathan Sfendji — and what I\'m up to right now.' },
+              { href: '/about',   num: '04', title: 'About',          sub: 'Who made this',        desc: 'A short introduction to me — Nathan Sfendji — and what I\'m up to right now.' },
             ].map((s, i) => (
               <R key={i} delay={i * 80}>
                 <Link href={s.href} style={{ display: 'block', textDecoration: 'none', color: 'inherit', height: '100%' }}>
