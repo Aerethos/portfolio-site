@@ -20,7 +20,7 @@ export default function About() {
                 <div style={{ marginTop: '24px', width: '32px', height: '2px', background: 'var(--accent)' }} />
                 <p style={{ marginTop: '16px', fontFamily: 'var(--mono)', fontSize: '0.65rem', letterSpacing: '0.14em', textTransform: 'uppercase', color: 'var(--mid)', lineHeight: 1.8 }}>
                   Waterford, Ireland<br />
-                  Budapest · April 2025
+                  Budapest · April 2026
                 </p>
               </div>
 
@@ -35,11 +35,11 @@ export default function About() {
                   zIndex: 0
                 }} />
                 <Image
-                  src="/nathanimage.png"
-                  alt="Nathan Sfendji in Budapest"
-                  fill
-                  style={{ objectFit: 'cover', objectPosition: 'center top', zIndex: 1 }}
-                />
+  src="/nathanimage.png"
+  alt="Nathan Sfendji in Budapest"
+  fill
+  style={{ objectFit: 'cover', objectPosition: 'center top', zIndex: 1, boxShadow: '0 0 0 3px var(--accent), 0 0 24px 4px rgba(212,69,12,0.35)' }}
+/>
               </div>
 
             </div>
