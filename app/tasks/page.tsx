@@ -184,12 +184,14 @@ export default function Tasks() {
               </div>
             </R>
           </div>
-          
+
+          {/* Brand identity breakdown */}
           <R delay={100}>
             <div className="card" style={{ marginTop: '8px' }}>
               <p className="label" style={{ marginBottom: '20px' }}>Brand identity — colour & type</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '32px' }}>
 
+                {/* Colours */}
                 <div>
                   <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Colour palette</p>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
@@ -209,6 +211,7 @@ export default function Tasks() {
                   </div>
                 </div>
 
+                {/* Typography */}
                 <div>
                   <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Typography</p>
                   <p style={{ fontFamily: 'Arial Black, sans-serif', fontSize: '1.4rem', fontWeight: 900, marginBottom: '4px', letterSpacing: '0.5px' }}>Arial Black</p>
@@ -218,6 +221,7 @@ export default function Tasks() {
                   </p>
                 </div>
 
+                {/* Logo mark */}
                 <div>
                   <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--mid)', marginBottom: '14px' }}>Logo mark</p>
                   <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '14px' }}>
@@ -244,7 +248,8 @@ export default function Tasks() {
           </R>
         </div>
       </section>
-      
+
+      {/* BITMAP */}
       <section style={{ background: 'var(--bg2)', borderTop: '1px solid var(--faint)' }}>
         <div className="wrap">
           <R>
@@ -268,6 +273,7 @@ export default function Tasks() {
               <div style={{ position: 'absolute', inset: 0, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.75\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.06\'/%3E%3C/svg%3E")', opacity: 0.5 }} />
               <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '40%', background: 'linear-gradient(to left, rgba(106,191,30,0.15), transparent)' }} />
 
+              {/* Mini logo in banner */}
               <svg viewBox="0 0 80 80" style={{ width: '52px', height: '52px', flexShrink: 0, position: 'relative' }}>
                 <circle cx="40" cy="40" r="38" fill="#6abf1e" />
                 <rect x="18" y="26" width="44" height="7" rx="3.5" fill="white" />
@@ -297,4 +303,22 @@ export default function Tasks() {
                   { step: 'Tool', detail: 'GIMP 2.10 (free, open-source raster editor)' },
                 ].map((m, i) => (
                   <div key={i} style={{ paddingLeft: '12px', borderLeft: '2px solid var(--faint)' }}>
-                    <p style={{ fontWei
+                    <p style={{ fontWeight: 500, fontSize: '0.85rem', marginBottom: '2px' }}>{m.step}</p>
+                    <p style={{ color: 'var(--mid)', fontSize: '0.8rem', lineHeight: 1.7 }}>{m.detail}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </R>
+        </div>
+      </section>
+
+      <section style={{ padding: '60px 0', borderTop: '1px solid var(--faint)' }}>
+        <div className="wrap" style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
+          <Link href="/about" className="btn btn-outline">← About</Link>
+          <Link href="/project" className="btn">Final Project →</Link>
+        </div>
+      </section>
+    </>
+  )
+}
