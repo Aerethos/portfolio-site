@@ -24,7 +24,7 @@ const reviews = [
   {
     type: 'Advertisement',
     name: 'IKEA — "Everyday Fabulous" print series',
-    url: 'https://www.ikea.com/gb/en/campaigns/everyday-fabulous/',
+    url: 'https://www.ikea.com/gb/en/',
     problems: [
       'Too many products in frame — the hero item gets lost, the eye doesn\'t know where to settle',
       'Price callouts use a competing visual language to the lifestyle photography — they feel grafted on',
@@ -62,7 +62,7 @@ const reviews = [
   {
     type: 'Brochure',
     name: 'Airbnb Host Handbook',
-    url: 'https://www.airbnb.com/resources/hosting-homes/a/the-airbnb-host-handbook-184',
+    url: 'https://www.airbnb.com/help/article/1500',
     problems: [
       'Too many full-bleed section breaks — the rhythm becomes choppy rather than building momentum',
       'Icon style is inconsistent across spreads: some flat, some outlined, one set with drop shadows',
@@ -83,12 +83,36 @@ const reviews = [
 export default function Review() {
   return (
     <>
+      <style>{`
+        .review-tag {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          font-family: var(--mono);
+          font-size: 0.6rem;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
+          padding: 6px 12px;
+          border: 1px solid var(--faint);
+          color: var(--mid);
+          text-decoration: none;
+          transition: border-color 0.2s, color 0.2s, background 0.2s;
+          white-space: nowrap;
+          cursor: none;
+        }
+        .review-tag:hover {
+          border-color: var(--accent);
+          color: var(--accent);
+          background: rgba(212,69,12,0.05);
+        }
+      `}</style>
+
       <div className="ptop">
         <div className="wrap">
           <R>
             <p className="label" style={{ marginBottom: '12px' }}>Graphic Review</p>
             <h1>Four things<br /><em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>looked at hard.</em></h1>
-            <p className="sub">A poster, an ad, a website, and a brochure — each analysed for what's broken, what's worth stealing, and what could be better.</p>
+            <p className="sub">A poster, an ad, a website, and a brochure — each analysed for what&apos;s broken, what&apos;s worth stealing, and what could be better.</p>
           </R>
         </div>
       </div>
@@ -104,40 +128,7 @@ export default function Review() {
               }}>
                 <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', marginBottom: '24px', flexWrap: 'wrap' }}>
 
-                  {/* Clickable type tag */}
-                  
-                    href={r.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '6px',
-                      fontFamily: 'var(--mono)',
-                      fontSize: '0.6rem',
-                      letterSpacing: '0.12em',
-                      textTransform: 'uppercase',
-                      padding: '6px 12px',
-                      border: '1px solid var(--faint)',
-                      color: 'var(--mid)',
-                      textDecoration: 'none',
-                      transition: 'border-color 0.2s, color 0.2s, background 0.2s',
-                      whiteSpace: 'nowrap',
-                      cursor: 'none',
-                    }}
-                    onMouseEnter={e => {
-                      const el = e.currentTarget
-                      el.style.borderColor = 'var(--accent)'
-                      el.style.color = 'var(--accent)'
-                      el.style.background = 'rgba(212,69,12,0.05)'
-                    }}
-                    onMouseLeave={e => {
-                      const el = e.currentTarget
-                      el.style.borderColor = 'var(--faint)'
-                      el.style.color = 'var(--mid)'
-                      el.style.background = 'transparent'
-                    }}
-                  >
+                  <a href={r.url} target="_blank" rel="noreferrer" className="review-tag">
                     {r.type}
                     <svg width="8" height="8" viewBox="0 0 8 8" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M1 7L7 1M7 1H2.5M7 1V5.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -147,7 +138,8 @@ export default function Review() {
                   <h2 style={{
                     fontFamily: 'var(--serif)',
                     fontSize: 'clamp(1.4rem, 2.5vw, 2rem)',
-                    flex: 1, minWidth: '200px'
+                    flex: 1,
+                    minWidth: '200px'
                   }}>{r.name}</h2>
                 </div>
 
