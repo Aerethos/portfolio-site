@@ -37,180 +37,169 @@ export default function Home() {
     const W = () => canvas.offsetWidth
     const H = () => canvas.offsetHeight
 
-    // Globe rotation
-    let rotation = 0
-    // Plane progress along arc
-    let planeT = 0
-    let trailPoints: { x: number; y: number; a: number }[] = []
+    // Ireland SVG path points (simplified outline, normalised 0-1)
+    const irelandPoints = [
+      [0.45,0.05],[0.55,0.04],[0.65,0.08],[0.72,0.14],[0.78,0.22],[0.80,0.30],
+      [0.75,0.38],[0.82,0.44],[0.85,0.52],[0.80,0.60],[0.72,0.66],[0.78,0.72],
+      [0.75,0.80],[0.68,0.88],[0.58,0.94],[0.48,0.96],[0.38,0.92],[0.28,0.85],
+      [0.20,0.76],[0.15,0.66],[0.12,0.56],[0.15,0.46],[0.10,0.38],[0.12,0.28],
+      [0.20,0.20],[0.28,0.13],[0.36,0.08],[0.45,0.05]
+    ]
 
-    // Convert lat/lng to canvas x/y for a simple orthographic projection
-    const project = (lat: number, lng: number, rot: number) => {
-      const latR = (lat * Math.PI) / 180
-      const lngR = ((lng + rot) * Math.PI) / 180
-      const cx = W() * 0.62
-      const cy = H() * 0.5
-      const r = Math.min(W(), H()) * 0.34
+    // Hungary SVG path points (simplified outline, normalised 0-1)
+    const hungaryPoints = [
+      [0.08,0.32],[0.18,0.22],[0.28,0.16],[0.40,0.12],[0.52,0.08],[0.64,0.10],
+      [0.74,0.06],[0.84,0.10],[0.92,0.18],[0.96,0.28],[0.94,0.38],[0.98,0.46],
+      [0.94,0.54],[0.88,0.62],[0.80,0.70],[0.70,0.76],[0.60,0.82],[0.50,0.88],
+      [0.40,0.90],[0.30,0.86],[0.20,0.80],[0.12,0.72],[0.06,0.62],[0.04,0.50],
+      [0.06,0.40],[0.08,0.32]
+    ]
 
-      const x2 = Math.cos(latR) * Math.sin(lngR)
-      const y2 = -Math.sin(latR)
-      const z2 = Math.cos(latR) * Math.cos(lngR)
-
-      return { x: cx + r * x2, y: cy + r * y2, visible: z2 > 0 }
-    }
-
-    // Dublin: 53.3°N, 6.3°W  Budapest: 47.5°N, 19.1°E
-    const dublinLat = 53.3, dublinLng = -6.3
-    const budLat = 47.5, budLng = 19.1
-
-    // Interpolate lat/lng along great circle (simple lerp good enough here)
-    const interpolate = (t: number) => {
-      const lat = dublinLat + (budLat - dublinLat) * t
-      const lng = dublinLng + (budLng - dublinLng) * t
-      // Arc height — push up slightly for great-circle feel
-      const arc = Math.sin(t * Math.PI) * 6
-      return { lat: lat + arc, lng }
-    }
-
-    // Draw a faint grid of lat/lng lines
-    const drawGlobe = (rot: number) => {
-      const cx = W() * 0.62
-      const cy = H() * 0.5
-      const r = Math.min(W(), H()) * 0.34
-
-      // Outer circle
+    const drawCountry = (
+      points: number[][],
+      bx: number, by: number, bw: number, bh: number,
+      fillColor: string, strokeColor: string
+    ) => {
       ctx.beginPath()
-      ctx.arc(cx, cy, r, 0, Math.PI * 2)
-      ctx.strokeStyle = 'rgba(212,69,12,0.08)'
-      ctx.lineWidth = 1
-      ctx.stroke()
-
-      // Fill
-      ctx.beginPath()
-      ctx.arc(cx, cy, r, 0, Math.PI * 2)
-      ctx.fillStyle = 'rgba(212,69,12,0.018)'
+      points.forEach(([nx, ny], i) => {
+        const px = bx + nx * bw
+        const py = by + ny * bh
+        i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py)
+      })
+      ctx.closePath()
+      ctx.fillStyle = fillColor
       ctx.fill()
-
-      // Longitude lines
-      for (let lng = -180; lng < 180; lng += 20) {
-        ctx.beginPath()
-        let first = true
-        for (let lat = -90; lat <= 90; lat += 3) {
-          const p = project(lat, lng, rot)
-          if (!p.visible) { first = true; continue }
-          if (first) { ctx.moveTo(p.x, p.y); first = false }
-          else ctx.lineTo(p.x, p.y)
-        }
-        ctx.strokeStyle = 'rgba(212,69,12,0.07)'
-        ctx.lineWidth = 0.5
-        ctx.stroke()
-      }
-
-      // Latitude lines
-      for (let lat = -60; lat <= 60; lat += 20) {
-        ctx.beginPath()
-        let first = true
-        for (let lng2 = -180; lng2 <= 180; lng2 += 3) {
-          const p = project(lat, lng2, rot)
-          if (!p.visible) { first = true; continue }
-          if (first) { ctx.moveTo(p.x, p.y); first = false }
-          else ctx.lineTo(p.x, p.y)
-        }
-        ctx.strokeStyle = 'rgba(212,69,12,0.06)'
-        ctx.lineWidth = 0.5
-        ctx.stroke()
-      }
+      ctx.strokeStyle = strokeColor
+      ctx.lineWidth = 1.5
+      ctx.stroke()
     }
 
-    const drawRoute = (rot: number, t: number) => {
-      // Draw dashed great-circle path
-      ctx.beginPath()
-      let first = true
-      for (let i = 0; i <= 100; i++) {
-        const pos = interpolate(i / 100)
-        const p = project(pos.lat, pos.lng, rot)
-        if (!p.visible) { first = true; continue }
-        if (first) { ctx.moveTo(p.x, p.y); first = false }
-        else ctx.lineTo(p.x, p.y)
+    const getCentroid = (
+      points: number[][], bx: number, by: number, bw: number, bh: number
+    ) => {
+      const sx = points.reduce((a, p) => a + p[0], 0) / points.length
+      const sy = points.reduce((a, p) => a + p[1], 0) / points.length
+      return { x: bx + sx * bw, y: by + sy * bh }
+    }
+
+    let planeT = 0
+    let trailPoints: { x: number; y: number }[] = []
+    let animId: number
+
+    const draw = () => {
+      ctx.clearRect(0, 0, W(), H())
+
+      const w = W(), h = H()
+
+      // Ireland — left side
+      const iw = w * 0.18, ih = h * 0.55
+      const ix = w * 0.08, iy = h * 0.22
+
+      // Hungary — right side
+      const hw = w * 0.22, hh = h * 0.38
+      const hx = w * 0.70, hy = h * 0.30
+
+      // Draw Ireland
+      drawCountry(
+        irelandPoints, ix, iy, iw, ih,
+        'rgba(212,69,12,0.07)',
+        'rgba(212,69,12,0.25)'
+      )
+
+      // Draw Hungary
+      drawCountry(
+        hungaryPoints, hx, hy, hw, hh,
+        'rgba(212,69,12,0.12)',
+        'rgba(212,69,12,0.35)'
+      )
+
+      // Centroids
+      const dublin = getCentroid(irelandPoints, ix, iy, iw, ih)
+      const budapest = getCentroid(hungaryPoints, hx, hy, hw, hh)
+
+      // Slight nudge to feel more like Dublin / Budapest city positions
+      dublin.x += iw * 0.05
+      dublin.y += ih * 0.18
+      budapest.x += hw * 0.05
+      budapest.y -= hh * 0.05
+
+      // Arc control point — curves upward
+      const cp = {
+        x: (dublin.x + budapest.x) / 2,
+        y: Math.min(dublin.y, budapest.y) - h * 0.28
       }
-      ctx.setLineDash([3, 5])
-      ctx.strokeStyle = 'rgba(212,69,12,0.25)'
-      ctx.lineWidth = 1
+
+      // Dashed flight path
+      ctx.beginPath()
+      ctx.moveTo(dublin.x, dublin.y)
+      ctx.quadraticCurveTo(cp.x, cp.y, budapest.x, budapest.y)
+      ctx.setLineDash([5, 8])
+      ctx.strokeStyle = 'rgba(212,69,12,0.2)'
+      ctx.lineWidth = 1.5
       ctx.stroke()
       ctx.setLineDash([])
 
-      // Dublin dot
-      const dublin = project(dublinLat, dublinLng, rot)
-      if (dublin.visible) {
-        ctx.beginPath()
-        ctx.arc(dublin.x, dublin.y, 3, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(212,69,12,0.6)'
-        ctx.fill()
-        ctx.font = '500 9px var(--mono, monospace)'
-        ctx.fillStyle = 'rgba(212,69,12,0.55)'
-        ctx.fillText('Dublin', dublin.x + 6, dublin.y - 4)
-      }
+      // Plane position along quadratic bezier
+      const bt = planeT
+      const px = (1-bt)*(1-bt)*dublin.x + 2*(1-bt)*bt*cp.x + bt*bt*budapest.x
+      const py = (1-bt)*(1-bt)*dublin.y + 2*(1-bt)*bt*cp.y + bt*bt*budapest.y
+      const bt2 = Math.min(bt + 0.01, 1)
+      const px2 = (1-bt2)*(1-bt2)*dublin.x + 2*(1-bt2)*bt2*cp.x + bt2*bt2*budapest.x
+      const py2 = (1-bt2)*(1-bt2)*dublin.y + 2*(1-bt2)*bt2*cp.y + bt2*bt2*budapest.y
+      const angle = Math.atan2(py2 - py, px2 - px)
 
-      // Budapest dot
-      const bud = project(budLat, budLng, rot)
-      if (bud.visible) {
+      // Trail
+      trailPoints.push({ x: px, y: py })
+      if (trailPoints.length > 50) trailPoints.shift()
+      trailPoints.forEach((pt, idx) => {
         ctx.beginPath()
-        ctx.arc(bud.x, bud.y, 3, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(212,69,12,0.9)'
+        ctx.arc(pt.x, pt.y, 1.2, 0, Math.PI * 2)
+        ctx.fillStyle = `rgba(212,69,12,${(idx / trailPoints.length) * 0.35})`
         ctx.fill()
-        // Pulse ring
-        ctx.beginPath()
-        ctx.arc(bud.x, bud.y, 6 + Math.sin(Date.now() / 400) * 2, 0, Math.PI * 2)
-        ctx.strokeStyle = 'rgba(212,69,12,0.35)'
-        ctx.lineWidth = 1
-        ctx.stroke()
-        ctx.font = '500 9px var(--mono, monospace)'
-        ctx.fillStyle = 'rgba(212,69,12,0.8)'
-        ctx.fillText('Budapest ✦', bud.x + 6, bud.y - 4)
-      }
+      })
 
       // Plane
-      const planePos = interpolate(t)
-      const plane = project(planePos.lat, planePos.lng, rot)
-      const nextPos = interpolate(Math.min(t + 0.01, 1))
-      const planeNext = project(nextPos.lat, nextPos.lng, rot)
+      ctx.save()
+      ctx.translate(px, py)
+      ctx.rotate(angle)
+      ctx.beginPath()
+      ctx.moveTo(10, 0)
+      ctx.lineTo(-6, 5)
+      ctx.lineTo(-4, 0)
+      ctx.lineTo(-6, -5)
+      ctx.closePath()
+      ctx.fillStyle = 'rgba(212,69,12,0.9)'
+      ctx.fill()
+      ctx.restore()
 
-      if (plane.visible) {
-        // Trail
-        trailPoints.push({ x: plane.x, y: plane.y, a: 1 })
-        if (trailPoints.length > 40) trailPoints.shift()
-        trailPoints.forEach((pt, idx) => {
-          ctx.beginPath()
-          ctx.arc(pt.x, pt.y, 1, 0, Math.PI * 2)
-          ctx.fillStyle = `rgba(212,69,12,${(idx / trailPoints.length) * 0.3})`
-          ctx.fill()
-        })
+      // Dublin dot + label
+      ctx.beginPath()
+      ctx.arc(dublin.x, dublin.y, 4, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(212,69,12,0.5)'
+      ctx.fill()
+      ctx.font = `500 10px monospace`
+      ctx.fillStyle = 'rgba(212,69,12,0.55)'
+      ctx.fillText('Dublin, Ireland', dublin.x - 8, dublin.y + 18)
 
-        // Plane icon (triangle rotated toward direction of travel)
-        const angle = Math.atan2(planeNext.y - plane.y, planeNext.x - plane.x)
-        ctx.save()
-        ctx.translate(plane.x, plane.y)
-        ctx.rotate(angle)
-        ctx.beginPath()
-        ctx.moveTo(8, 0)
-        ctx.lineTo(-5, 4)
-        ctx.lineTo(-3, 0)
-        ctx.lineTo(-5, -4)
-        ctx.closePath()
-        ctx.fillStyle = 'rgba(212,69,12,0.85)'
-        ctx.fill()
-        ctx.restore()
-      }
-    }
+      // Budapest dot + pulse + label
+      const pulse = 5 + Math.sin(Date.now() / 500) * 2.5
+      ctx.beginPath()
+      ctx.arc(budapest.x, budapest.y, pulse, 0, Math.PI * 2)
+      ctx.strokeStyle = 'rgba(212,69,12,0.25)'
+      ctx.lineWidth = 1
+      ctx.stroke()
+      ctx.beginPath()
+      ctx.arc(budapest.x, budapest.y, 4, 0, Math.PI * 2)
+      ctx.fillStyle = 'rgba(212,69,12,0.85)'
+      ctx.fill()
+      ctx.font = `500 10px monospace`
+      ctx.fillStyle = 'rgba(212,69,12,0.8)'
+      ctx.fillText('Budapest ✦', budapest.x - 8, budapest.y + 18)
 
-    let animId: number
-    const draw = () => {
-      ctx.clearRect(0, 0, W(), H())
-      rotation += 0.04
-      planeT += 0.0018
+      // Advance plane
+      planeT += 0.003
       if (planeT > 1) { planeT = 0; trailPoints = [] }
 
-      drawGlobe(rotation)
-      drawRoute(rotation, planeT)
       animId = requestAnimationFrame(draw)
     }
     draw()
@@ -237,14 +226,12 @@ export default function Home() {
         background: 'var(--bg)'
       }}>
 
-        {/* Globe canvas — full hero background */}
         <canvas ref={canvasRef} style={{
           position: 'absolute', inset: 0,
           width: '100%', height: '100%',
           pointerEvents: 'none', zIndex: 1
         }} />
 
-        {/* Top-right tag */}
         <div style={{
           position: 'absolute', top: '32px', right: '48px',
           fontFamily: 'var(--mono)', fontSize: '0.6rem', letterSpacing: '0.14em',
@@ -256,7 +243,6 @@ export default function Home() {
           <span style={{ color: 'var(--accent)' }}>Erasmus BIP · Budapest 2026</span>
         </div>
 
-        {/* Left vertical rule */}
         <div style={{ position: 'absolute', top: 0, left: '48px', width: '1px', height: '100%', background: 'linear-gradient(to bottom, transparent 0%, var(--faint) 25%, var(--faint) 75%, transparent 100%)', zIndex: 2 }} />
         <div style={{
           position: 'absolute', left: '20px', top: '50%', transform: 'translateY(-50%) rotate(-90deg)',
@@ -264,14 +250,12 @@ export default function Home() {
           textTransform: 'uppercase', color: 'var(--faint)', whiteSpace: 'nowrap', zIndex: 2
         }}>Waterford · Ireland</div>
 
-        {/* Horizontal mid rule */}
         <div style={{
           position: 'absolute', top: '50%', left: 0, right: 0,
           height: '1px', background: 'var(--faint)', opacity: 0.3,
           pointerEvents: 'none', zIndex: 2
         }} />
 
-        {/* Main content */}
         <div className="wrap" style={{ position: 'relative', zIndex: 3, paddingTop: '0' }}>
           <div style={{ marginBottom: '40px' }}>
             <h1 className="hero-word" style={{
@@ -312,7 +296,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Scroll indicator */}
         <div style={{ position: 'absolute', bottom: '36px', left: '50%', transform: 'translateX(-50%)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', zIndex: 3 }}>
           <p className="label" style={{ fontSize: '0.55rem' }}>Scroll</p>
           <div style={{ width: '1px', height: '36px', background: 'linear-gradient(to bottom, var(--accent), transparent)', animation: 'nudge 2s ease-in-out infinite' }} />
@@ -321,7 +304,7 @@ export default function Home() {
 
       {/* ── MARQUEE STRIP ── */}
       <div style={{ background: 'var(--ink)', padding: '18px 0', overflow: 'hidden', borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
-        <div ref={marqueeRef} style={{ display: 'flex', gap: '0', whiteSpace: 'nowrap' }}>
+        <div ref={marqueeRef} style={{ display: 'flex', whiteSpace: 'nowrap' }}>
           {Array(4).fill(null).map((_, i) => (
             <span key={i} style={{ fontFamily: 'var(--mono)', fontSize: '0.62rem', letterSpacing: '0.18em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.25)' }}>
               {['Nathan Sfendji', '·', 'AerEthos', '·', 'SETU Waterford', '·', 'Erasmus Budapest 2026', '·', 'Graphic Design & Web', '·', 'Next.js', '·'].map((w, j) => (
@@ -337,8 +320,8 @@ export default function Home() {
         <div className="wrap">
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', borderLeft: '1px solid rgba(255,255,255,0.06)' }}>
             {[
-              { num: '20', label: 'Years old' },
-              { num: 'IE', label: 'Waterford, Ireland' },
+              { num: '20',  label: 'Years old' },
+              { num: 'IE',  label: 'Waterford, Ireland' },
               { num: 'BUD', label: 'Erasmus · Budapest' },
               { num: '\'23', label: 'AerEthos founded' },
             ].map((f, i) => (
@@ -359,9 +342,7 @@ export default function Home() {
           <R>
             <p className="label">Module Work</p>
             <div className="rule" />
-            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', marginBottom: '14px' }}>
-              What&apos;s on this site
-            </h2>
+            <h2 style={{ fontSize: 'clamp(2rem, 4vw, 3.2rem)', marginBottom: '14px' }}>What&apos;s on this site</h2>
             <p style={{ color: 'var(--mid)', maxWidth: '520px', lineHeight: 1.85, marginBottom: '56px' }}>
               Four sections covering everything required for the Graphic Design &amp; Web module.
             </p>
@@ -397,15 +378,14 @@ export default function Home() {
             <div style={{ padding: '64px 60px 64px 0', borderRight: '1px solid var(--faint)' }}>
               <p className="label" style={{ marginBottom: '12px' }}>Outside of class</p>
               <h2 style={{ fontFamily: 'var(--serif)', fontSize: 'clamp(1.8rem, 3vw, 2.6rem)', lineHeight: 1.15, marginBottom: '20px' }}>
-                I run <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>AerEthos</em> —<br />
-                yearbooks for Irish schools.
+                I run <em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>AerEthos</em> —<br />yearbooks for Irish schools.
               </h2>
               <a href="https://aerethos.com" target="_blank" rel="noreferrer" className="btn">aerethos.com →</a>
             </div>
             <div style={{ padding: '64px 0 64px 60px', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               {[
-                { stat: '6+',  detail: 'Schools served' },
-                { stat: 'EI',  detail: 'Enterprise Ireland — New Frontiers' },
+                { stat: '6+',   detail: 'Schools served' },
+                { stat: 'EI',   detail: 'Enterprise Ireland — New Frontiers' },
                 { stat: '\'23', detail: 'Founded in sixth year' },
                 { stat: '.com', detail: 'aerethos.com — built from scratch' },
               ].map((item, i) => (
