@@ -275,7 +275,7 @@ export default function Home() {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '48px', maxWidth: '860px' }}>
             <R delay={400}>
               <p style={{ fontSize: '1rem', color: 'var(--mid)', lineHeight: 1.9 }}>
-                Founder of <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>AerEthos</strong>, second-year International Business student at SETU Waterford, and currently in Budapest for an Erasmus study week. This site is part of a Graphic Design &amp; Web module — but if we&apos;re making a site, we might as well make a proper one.
+                Founder of <strong style={{ color: 'var(--ink)', fontWeight: 500 }}>AerEthos</strong>, second-year International Business student at SETU Waterford, and currently in Budapest for an Erasmus study week. This site is part of a Graphic Design &amp; Web module.
               </p>
             </R>
             <R delay={500}>
