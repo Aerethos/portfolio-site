@@ -92,8 +92,8 @@ export default function Review() {
         <div className="wrap">
           <R>
             <p className="label" style={{ marginBottom: '12px' }}>Graphic Review</p>
-            <h1>Four things<br /><em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>looked at hard.</em></h1>
-            <p className="sub">A poster, an ad, a website, and a brochure — each analysed for what&apos;s broken, what&apos;s worth stealing, and what could be better.</p>
+            <h1>Three things<br /><em style={{ fontStyle: 'italic', color: 'var(--accent)' }}>looked at hard.</em></h1>
+            <p className="sub">A poster, an ad & a website — each analysed for what&apos;s broken, what&apos;s worth stealing, and what could be better.</p>
           </R>
         </div>
       </div>
