@@ -80,7 +80,6 @@ export default function Project() {
               AerEthos uses a three-colour palette, two typefaces, and a single tonal register — quiet authority. Every application below derives from the same source.
             </p>
           </R>
-
           <R delay={60}>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', border: '1px solid var(--faint)', overflow: 'hidden', marginBottom: '16px' }}>
               {[
@@ -110,9 +109,7 @@ export default function Project() {
       <section>
         <div className="wrap">
 
-          {/* ══════════════════════════════════════
-              01 — BUSINESS CARDS (GOOD vs BAD)
-          ══════════════════════════════════════ */}
+          {/* 01 — BUSINESS CARDS */}
           <R>
             <div style={{ marginBottom: '80px' }}>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
@@ -123,9 +120,7 @@ export default function Project() {
               <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
                 The front uses the Stone (#CFC9B8) background — warm, premium, immediately different from standard white cards. The back is full Navy with Gold details, making it memorable when flipped.
               </p>
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
-                {/* GOOD */}
                 <div>
                   <div className="compare-label-good">✓ Good design</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
@@ -153,8 +148,6 @@ export default function Project() {
                     </p>
                   </div>
                 </div>
-
-                {/* BAD */}
                 <div>
                   <div className="compare-label-bad">✗ Poor design</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
@@ -183,9 +176,7 @@ export default function Project() {
             </div>
           </R>
 
-          {/* ══════════════════════════════════════
-              02 — LETTERHEAD (GOOD vs BAD)
-          ══════════════════════════════════════ */}
+          {/* 02 — LETTERHEAD */}
           <R>
             <div style={{ marginBottom: '80px' }}>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
@@ -196,9 +187,7 @@ export default function Project() {
               <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
                 Sent to school principals as part of outreach. The letter itself is the first impression — it needs to communicate craft before a word is read.
               </p>
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
-                {/* GOOD */}
                 <div>
                   <div className="compare-label-good">✓ Good design</div>
                   <div style={{ background: '#fafaf8', border: '1px solid var(--faint)', padding: '36px 40px', position: 'relative', marginBottom: '16px' }}>
@@ -222,8 +211,6 @@ export default function Project() {
                     </p>
                   </div>
                 </div>
-
-                {/* BAD */}
                 <div>
                   <div className="compare-label-bad">✗ Poor design</div>
                   <div style={{ background: '#fff', border: '1px solid #ccc', padding: '36px 40px', marginBottom: '16px' }}>
@@ -246,9 +233,7 @@ export default function Project() {
             </div>
           </R>
 
-          {/* ══════════════════════════════════════
-              03 — ADVERTISEMENT (GOOD vs BAD)
-          ══════════════════════════════════════ */}
+          {/* 03 — ADVERTISEMENT */}
           <R>
             <div style={{ marginBottom: '80px' }}>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
@@ -259,9 +244,7 @@ export default function Project() {
               <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
                 Targeting school principals in education publications and LinkedIn. The ad needs to communicate premium quality instantly — principals decide in under three seconds whether to keep reading.
               </p>
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
-                {/* GOOD */}
                 <div>
                   <div className="compare-label-good">✓ Good design</div>
                   <div style={{ background: '#001E3C', padding: '48px 44px', position: 'relative', overflow: 'hidden', minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -285,8 +268,6 @@ export default function Project() {
                     </p>
                   </div>
                 </div>
-
-                {/* BAD */}
                 <div>
                   <div className="compare-label-bad">✗ Poor design</div>
                   <div style={{ background: '#fff', border: '2px solid #003399', padding: '28px', minHeight: '300px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', marginBottom: '16px' }}>
@@ -304,7 +285,7 @@ export default function Project() {
                   </div>
                   <div style={{ padding: '14px 16px', background: 'rgba(192,57,43,0.05)', borderLeft: '2px solid #c0392b' }}>
                     <p style={{ fontSize: '0.8rem', color: 'var(--mid)', lineHeight: 1.75 }}>
-                      <strong style={{ color: 'var(--ink)' }}>Why it fails:</strong> Screams cheap. Yellow CTA banner is the visual equivalent of shouting. Exclamation marks undermine the premium positioning. Checklist bullets are clichéd. The design contradicts the "premium" claim in the copy.
+                      <strong style={{ color: 'var(--ink)' }}>Why it fails:</strong> Screams cheap. Yellow CTA banner is the visual equivalent of shouting. Exclamation marks undermine the premium positioning. Checklist bullets are clichéd. The design contradicts the &quot;premium&quot; claim in the copy.
                     </p>
                   </div>
                 </div>
@@ -312,9 +293,7 @@ export default function Project() {
             </div>
           </R>
 
-          {/* ══════════════════════════════════════
-              04 — OPENING HOURS (GOOD vs BAD)
-          ══════════════════════════════════════ */}
+          {/* 04 — OPENING HOURS */}
           <R>
             <div style={{ marginBottom: '80px' }}>
               <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
@@ -325,12 +304,10 @@ export default function Project() {
               <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
                 A studio hours display for the AerEthos workspace. When a school visits in person, this is one of the first things they see. It should communicate the same quality as the yearbooks.
               </p>
-
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
-                {/* GOOD */}
                 <div>
                   <div className="compare-label-good">✓ Good design</div>
-                  <div style={{ background: '#001E3C', padding: '52px 48px', maxWidth: '100%', position: 'relative', overflow: 'hidden', marginBottom: '16px' }}>
+                  <div style={{ background: '#001E3C', padding: '52px 48px', position: 'relative', overflow: 'hidden', marginBottom: '16px' }}>
                     <div style={{ position: 'absolute', top: 0, left: '36px', width: '1px', height: '100%', background: 'rgba(176,138,74,0.1)' }} />
                     <p className="ae-sans" style={{ fontSize: '0.52rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B08A4A', marginBottom: '36px' }}>AerEthos Studio · Waterford</p>
                     {[
@@ -347,12 +324,10 @@ export default function Project() {
                   </div>
                   <div style={{ padding: '14px 16px', background: 'rgba(43,138,62,0.05)', borderLeft: '2px solid #2b8a3e' }}>
                     <p style={{ fontSize: '0.8rem', color: 'var(--mid)', lineHeight: 1.75 }}>
-                      <strong style={{ color: 'var(--ink)' }}>Why it works:</strong> The hours become the typographic hero — Cormorant italic at large scale is genuinely beautiful. Navy background with gold accent rule is unmistakably on-brand. Quiet authority, nothing shouting.
+                      <strong style={{ color: 'var(--ink)' }}>Why it works:</strong> The hours become the typographic hero — Cormorant italic at large scale is genuinely beautiful. Navy background with gold accent is unmistakably on-brand. Quiet authority, nothing shouting.
                     </p>
                   </div>
                 </div>
-
-                {/* BAD */}
                 <div>
                   <div className="compare-label-bad">✗ Poor design</div>
                   <div style={{ background: '#fff', border: '1px solid #ccc', padding: '32px', marginBottom: '16px' }}>
@@ -385,72 +360,70 @@ export default function Project() {
             </div>
           </R>
 
-          {/* ══════════════════════════════════════
-    05 — WEBSITE MOCKUP
-══════════════════════════════════════ */}
-<R>
-  <div style={{ marginBottom: '40px' }}>
-    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
-      <span className="ae-serif" style={{ fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>05</span>
-      <h3 className="ae-sans" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Website Mockup</h3>
-      <span style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', color: 'var(--mid)', marginLeft: 'auto' }}>Figma · Desktop + Mobile</span>
-    </div>
-    <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
-      A three-page Figma prototype — Home, Schools, Contact — reflecting the live aerethos.com visual language. Mobile-first breakpoints, interactive prototype exported for presentation.
-    </p>
+          {/* 05 — WEBSITE MOCKUP */}
+          <R>
+            <div style={{ marginBottom: '40px' }}>
+              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
+                <span className="ae-serif" style={{ fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>05</span>
+                <h3 className="ae-sans" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Website Mockup</h3>
+                <span style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', color: 'var(--mid)', marginLeft: 'auto' }}>Figma · Desktop + Mobile</span>
+              </div>
+              <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
+                A three-page Figma prototype — Home, Schools, Contact — reflecting the live aerethos.com visual language. Mobile-first breakpoints, interactive prototype exported for presentation.
+              </p>
 
-    <div style={{ border: '1px solid var(--faint)', overflow: 'hidden', maxWidth: '680px' }}>
-      <div style={{ background: 'var(--bg2)', padding: '10px 16px', borderBottom: '1px solid var(--faint)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-        <div style={{ display: 'flex', gap: '5px' }}>
-          {['#ff5f57','#febc2e','#28c840'].map(c => <div key={c} style={{ width: '10px', height: '10px', borderRadius: '50%', background: c }} />)}
-        </div>
-        <div style={{ flex: 1, background: 'var(--bg)', border: '1px solid var(--faint)', borderRadius: '3px', padding: '4px 12px', marginLeft: '8px' }}>
-          <p style={{ fontFamily: 'var(--mono)', fontSize: '0.55rem', color: 'var(--mid)' }}>aerethos.com</p>
-        </div>
-      </div>
-      <div style={{ background: '#001E3C', padding: '48px 52px', minHeight: '300px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '300px', height: '300px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.06)' }} />
-        <div style={{ position: 'absolute', right: '40px', bottom: '40px', width: '180px', height: '180px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.05)' }} />
-        <p className="ae-sans" style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B08A4A', marginBottom: '24px' }}>
-          AerEthos &nbsp;·&nbsp; Schools &nbsp;·&nbsp; Our Work &nbsp;·&nbsp; Contact
-        </p>
-        <p className="ae-serif" style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 300, fontStyle: 'italic', color: '#CFC9B8', lineHeight: 1.1, maxWidth: '400px', marginBottom: '20px' }}>
-          Your school&apos;s story,<br />told properly.
-        </p>
-        <div style={{ width: '36px', height: '1px', background: '#B08A4A', marginBottom: '20px' }} />
-        <p className="ae-sans" style={{ fontSize: '0.62rem', fontWeight: 300, color: 'rgba(207,201,184,0.45)', maxWidth: '340px', lineHeight: 1.8, marginBottom: '32px' }}>
-          Premium yearbooks and memory publishing for Irish secondary schools. Backed by Enterprise Ireland.
-        </p>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <div style={{ background: '#B08A4A', padding: '10px 20px' }}>
-            <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 600, color: '#001E3C', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Get in touch</p>
-          </div>
-          <div style={{ border: '1px solid rgba(176,138,74,0.4)', padding: '10px 20px' }}>
-            <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 400, color: '#B08A4A', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Our work</p>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div style={{ border: '1px solid var(--faint)', overflow: 'hidden', maxWidth: '680px' }}>
+                <div style={{ background: 'var(--bg2)', padding: '10px 16px', borderBottom: '1px solid var(--faint)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', gap: '5px' }}>
+                    {['#ff5f57','#febc2e','#28c840'].map(c => <div key={c} style={{ width: '10px', height: '10px', borderRadius: '50%', background: c }} />)}
+                  </div>
+                  <div style={{ flex: 1, background: 'var(--bg)', border: '1px solid var(--faint)', borderRadius: '3px', padding: '4px 12px', marginLeft: '8px' }}>
+                    <p style={{ fontFamily: 'var(--mono)', fontSize: '0.55rem', color: 'var(--mid)' }}>aerethos.com</p>
+                  </div>
+                </div>
+                <div style={{ background: '#001E3C', padding: '48px 52px', minHeight: '300px', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '300px', height: '300px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.06)' }} />
+                  <div style={{ position: 'absolute', right: '40px', bottom: '40px', width: '180px', height: '180px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.05)' }} />
+                  <p className="ae-sans" style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B08A4A', marginBottom: '24px' }}>
+                    AerEthos &nbsp;·&nbsp; Schools &nbsp;·&nbsp; Our Work &nbsp;·&nbsp; Contact
+                  </p>
+                  <p className="ae-serif" style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 300, fontStyle: 'italic', color: '#CFC9B8', lineHeight: 1.1, maxWidth: '400px', marginBottom: '20px' }}>
+                    Your school&apos;s story,<br />told properly.
+                  </p>
+                  <div style={{ width: '36px', height: '1px', background: '#B08A4A', marginBottom: '20px' }} />
+                  <p className="ae-sans" style={{ fontSize: '0.62rem', fontWeight: 300, color: 'rgba(207,201,184,0.45)', maxWidth: '340px', lineHeight: 1.8, marginBottom: '32px' }}>
+                    Premium yearbooks and memory publishing for Irish secondary schools. Backed by Enterprise Ireland.
+                  </p>
+                  <div style={{ display: 'flex', gap: '12px' }}>
+                    <div style={{ background: '#B08A4A', padding: '10px 20px' }}>
+                      <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 600, color: '#001E3C', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Get in touch</p>
+                    </div>
+                    <div style={{ border: '1px solid rgba(176,138,74,0.4)', padding: '10px 20px' }}>
+                      <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 400, color: '#B08A4A', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Our work</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-    <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', maxWidth: '680px' }}>
-      <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', letterSpacing: '0.08em' }}>
-        Homepage hero — mirrors live aerethos.com · Built in Figma with auto-layout components
-      </p>
-      
-        href="https://www.aerethos.com"
-        target="_blank"
-        rel="noreferrer"
-        className="btn"
-        style={{ flexShrink: 0 }}
-      >
-        See the real thing → aerethos.com
-      </a>
-    </div>
-  </div>
-</R>
+              <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', maxWidth: '680px' }}>
+                <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', letterSpacing: '0.08em' }}>
+                  Homepage hero — mirrors live aerethos.com · Built in Figma with auto-layout components
+                </p>
+                
+                  href="https://www.aerethos.com"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn"
+                  style={{ flexShrink: 0 }}
+                >
+                  See the real thing → aerethos.com
+                </a>
+              </div>
+            </div>
+          </R>
 
-  </div>
-</section>
+        </div>
+      </section>
 
       {/* ── SUMMARY ── */}
       <section style={{ background: '#001E3C', padding: '80px 0' }}>
