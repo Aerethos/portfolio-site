@@ -1,3 +1,4 @@
+'use client'
 import R from '@/components/R'
 import Link from 'next/link'
 
@@ -371,7 +372,6 @@ export default function Project() {
               <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
                 A three-page Figma prototype — Home, Schools, Contact — reflecting the live aerethos.com visual language. Mobile-first breakpoints, interactive prototype exported for presentation.
               </p>
-
               <div style={{ border: '1px solid var(--faint)', overflow: 'hidden', maxWidth: '680px' }}>
                 <div style={{ background: 'var(--bg2)', padding: '10px 16px', borderBottom: '1px solid var(--faint)', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <div style={{ display: 'flex', gap: '5px' }}>
@@ -404,7 +404,6 @@ export default function Project() {
                   </div>
                 </div>
               </div>
-
               <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', maxWidth: '680px' }}>
                 <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', letterSpacing: '0.08em' }}>
                   Homepage hero — mirrors live aerethos.com · Built in Figma with auto-layout components
