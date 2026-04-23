@@ -408,7 +408,7 @@ export default function Project() {
                 <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', letterSpacing: '0.08em' }}>
                   Homepage hero — mirrors live aerethos.com · Built in Figma with auto-layout components
                 </p>
-                
+                <Link
                   href="https://www.aerethos.com"
                   target="_blank"
                   rel="noreferrer"
@@ -416,7 +416,7 @@ export default function Project() {
                   style={{ flexShrink: 0 }}
                 >
                   See the real thing → aerethos.com
-                </a>
+                </Link>
               </div>
             </div>
           </R>
