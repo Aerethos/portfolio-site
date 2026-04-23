@@ -386,57 +386,71 @@ export default function Project() {
           </R>
 
           {/* ══════════════════════════════════════
-              05 — WEBSITE MOCKUP
-          ══════════════════════════════════════ */}
-          <R>
-            <div style={{ marginBottom: '40px' }}>
-              <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
-                <span className="ae-serif" style={{ fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>05</span>
-                <h3 className="ae-sans" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Website Mockup</h3>
-                <span style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', color: 'var(--mid)', marginLeft: 'auto' }}>Figma · Desktop + Mobile</span>
-              </div>
-              <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
-                A three-page Figma prototype — Home, Schools, Contact — reflecting the live aerethos.com visual language. Mobile-first breakpoints, interactive prototype exported for presentation.
-              </p>
+    05 — WEBSITE MOCKUP
+══════════════════════════════════════ */}
+<R>
+  <div style={{ marginBottom: '40px' }}>
+    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', marginBottom: '8px' }}>
+      <span className="ae-serif" style={{ fontStyle: 'italic', color: '#B08A4A', fontSize: '1rem' }}>05</span>
+      <h3 className="ae-sans" style={{ fontSize: '1.1rem', fontWeight: 500 }}>Website Mockup</h3>
+      <span style={{ fontFamily: 'var(--mono)', fontSize: '0.58rem', color: 'var(--mid)', marginLeft: 'auto' }}>Figma · Desktop + Mobile</span>
+    </div>
+    <p style={{ color: 'var(--mid)', fontSize: '0.88rem', lineHeight: 1.8, marginBottom: '36px', maxWidth: '600px' }}>
+      A three-page Figma prototype — Home, Schools, Contact — reflecting the live aerethos.com visual language. Mobile-first breakpoints, interactive prototype exported for presentation.
+    </p>
 
-              <div style={{ border: '1px solid var(--faint)', overflow: 'hidden', maxWidth: '680px' }}>
-                <div style={{ background: 'var(--bg2)', padding: '10px 16px', borderBottom: '1px solid var(--faint)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ display: 'flex', gap: '5px' }}>
-                    {['#ff5f57','#febc2e','#28c840'].map(c => <div key={c} style={{ width: '10px', height: '10px', borderRadius: '50%', background: c }} />)}
-                  </div>
-                  <div style={{ flex: 1, background: 'var(--bg)', border: '1px solid var(--faint)', borderRadius: '3px', padding: '4px 12px', marginLeft: '8px' }}>
-                    <p style={{ fontFamily: 'var(--mono)', fontSize: '0.55rem', color: 'var(--mid)' }}>aerethos.com</p>
-                  </div>
-                </div>
-                <div style={{ background: '#001E3C', padding: '48px 52px', minHeight: '300px', position: 'relative', overflow: 'hidden' }}>
-                  <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '300px', height: '300px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.06)' }} />
-                  <div style={{ position: 'absolute', right: '40px', bottom: '40px', width: '180px', height: '180px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.05)' }} />
-                  <p className="ae-sans" style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B08A4A', marginBottom: '24px' }}>
-                    AerEthos &nbsp;·&nbsp; Schools &nbsp;·&nbsp; Our Work &nbsp;·&nbsp; Contact
-                  </p>
-                  <p className="ae-serif" style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 300, fontStyle: 'italic', color: '#CFC9B8', lineHeight: 1.1, maxWidth: '400px', marginBottom: '20px' }}>
-                    Your school&apos;s story,<br />told properly.
-                  </p>
-                  <div style={{ width: '36px', height: '1px', background: '#B08A4A', marginBottom: '20px' }} />
-                  <p className="ae-sans" style={{ fontSize: '0.62rem', fontWeight: 300, color: 'rgba(207,201,184,0.45)', maxWidth: '340px', lineHeight: 1.8, marginBottom: '32px' }}>
-                    Premium yearbooks and memory publishing for Irish secondary schools. Backed by Enterprise Ireland.
-                  </p>
-                  <div style={{ display: 'flex', gap: '12px' }}>
-                    <div style={{ background: '#B08A4A', padding: '10px 20px' }}>
-                      <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 600, color: '#001E3C', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Get in touch</p>
-                    </div>
-                    <div style={{ border: '1px solid rgba(176,138,74,0.4)', padding: '10px 20px' }}>
-                      <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 400, color: '#B08A4A', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Our work</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', marginTop: '10px', letterSpacing: '0.08em' }}>Homepage hero — mirrors live aerethos.com · Built in Figma with auto-layout components</p>
-            </div>
-          </R>
-
+    <div style={{ border: '1px solid var(--faint)', overflow: 'hidden', maxWidth: '680px' }}>
+      <div style={{ background: 'var(--bg2)', padding: '10px 16px', borderBottom: '1px solid var(--faint)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', gap: '5px' }}>
+          {['#ff5f57','#febc2e','#28c840'].map(c => <div key={c} style={{ width: '10px', height: '10px', borderRadius: '50%', background: c }} />)}
         </div>
-      </section>
+        <div style={{ flex: 1, background: 'var(--bg)', border: '1px solid var(--faint)', borderRadius: '3px', padding: '4px 12px', marginLeft: '8px' }}>
+          <p style={{ fontFamily: 'var(--mono)', fontSize: '0.55rem', color: 'var(--mid)' }}>aerethos.com</p>
+        </div>
+      </div>
+      <div style={{ background: '#001E3C', padding: '48px 52px', minHeight: '300px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', right: '-40px', bottom: '-40px', width: '300px', height: '300px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.06)' }} />
+        <div style={{ position: 'absolute', right: '40px', bottom: '40px', width: '180px', height: '180px', borderRadius: '50%', border: '1px solid rgba(176,138,74,0.05)' }} />
+        <p className="ae-sans" style={{ fontSize: '0.5rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: '#B08A4A', marginBottom: '24px' }}>
+          AerEthos &nbsp;·&nbsp; Schools &nbsp;·&nbsp; Our Work &nbsp;·&nbsp; Contact
+        </p>
+        <p className="ae-serif" style={{ fontSize: 'clamp(1.8rem, 4vw, 3rem)', fontWeight: 300, fontStyle: 'italic', color: '#CFC9B8', lineHeight: 1.1, maxWidth: '400px', marginBottom: '20px' }}>
+          Your school&apos;s story,<br />told properly.
+        </p>
+        <div style={{ width: '36px', height: '1px', background: '#B08A4A', marginBottom: '20px' }} />
+        <p className="ae-sans" style={{ fontSize: '0.62rem', fontWeight: 300, color: 'rgba(207,201,184,0.45)', maxWidth: '340px', lineHeight: 1.8, marginBottom: '32px' }}>
+          Premium yearbooks and memory publishing for Irish secondary schools. Backed by Enterprise Ireland.
+        </p>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <div style={{ background: '#B08A4A', padding: '10px 20px' }}>
+            <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 600, color: '#001E3C', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Get in touch</p>
+          </div>
+          <div style={{ border: '1px solid rgba(176,138,74,0.4)', padding: '10px 20px' }}>
+            <p className="ae-sans" style={{ fontSize: '0.55rem', fontWeight: 400, color: '#B08A4A', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Our work</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px', maxWidth: '680px' }}>
+      <p style={{ fontFamily: 'var(--mono)', fontSize: '0.6rem', color: 'var(--mid)', letterSpacing: '0.08em' }}>
+        Homepage hero — mirrors live aerethos.com · Built in Figma with auto-layout components
+      </p>
+      
+        href="https://www.aerethos.com"
+        target="_blank"
+        rel="noreferrer"
+        className="btn"
+        style={{ flexShrink: 0 }}
+      >
+        See the real thing → aerethos.com
+      </a>
+    </div>
+  </div>
+</R>
+
+  </div>
+</section>
 
       {/* ── SUMMARY ── */}
       <section style={{ background: '#001E3C', padding: '80px 0' }}>
