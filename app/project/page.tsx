@@ -409,7 +409,7 @@ export default function Project() {
                   Homepage hero — mirrors live aerethos.com · Built in Figma with auto-layout components
                 </p>
                 <Link
-                  href="https://www.aerethos.com/road-to-2030"
+                  href="https://www.aerethos.com"
                   target="_blank"
                   rel="noreferrer"
                   className="btn"
